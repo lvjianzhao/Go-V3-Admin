@@ -86,8 +86,30 @@ func (a *ApiService) GetApis(apiSp systemReq.ApiSearchParams) ([]systemModel.Api
 		return apiList, total, err
 	} else {
 		db = db.Limit(limit).Offset(offset)
-		db = db.Order("updated_at DESC").Find(&apiList)
+		if apiSp.OrderKey != "" {
+			var orderStr string
+			// 设置有效排序key 防止sql注入
+			orderMap := make(map[string]bool, 5)
+			orderMap["path"] = true
+			orderMap["api_group"] = true
+			orderMap["description"] = true
+			orderMap["method"] = true
+			orderMap["updated_at"] = true
+			if orderMap[apiSp.OrderKey] {
+				if apiSp.Desc {
+					orderStr = apiSp.OrderKey + " desc"
+				} else {
+					orderStr = apiSp.OrderKey
+				}
+			} else { // didn't match any order key in `orderMap`
+				err = fmt.Errorf("非法的排序字段: %v", apiSp.OrderKey)
+				return apiList, total, err
+			}
 
+			err = db.Order(orderStr).Find(&apiList).Error
+		} else {
+			err = db.Find(&apiList).Error
+		}
 	}
 	return apiList, total, err
 }
@@ -171,7 +193,7 @@ func (a *ApiService) DeleteApi(id uint) (err error) {
 
 	ok := CasbinServiceApp.ClearCasbin(1, apiModel.Path, apiModel.Method)
 	if !ok {
-		return errors.New(apiModel.Path + ":" + apiModel.Method + "casbin同步清理失败")
+		global.TD27_LOG.Warn("ApiPath: " + apiModel.Path + ",Method: " + apiModel.Method + " casbin同步清理失败")
 	}
 	e := CasbinServiceApp.Casbin()
 	err = e.InvalidateCache()

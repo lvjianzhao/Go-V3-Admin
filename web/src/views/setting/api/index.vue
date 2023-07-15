@@ -56,10 +56,11 @@
       <div class="table-wrapper">
         <el-table :data="tableData" @sort-change="handleSortChange">
           <el-table-column prop="ID" label="ID"/>
-          <el-table-column prop="path" label="路径" sortable="custom"/>
-          <el-table-column prop="api_group" label="分组" sortable="custom"/>
-          <el-table-column prop="method" label="请求方法" sortable="custom"/>
+          <el-table-column prop="path" label="路径"/>
+          <el-table-column prop="api_group" label="分组"/>
+          <el-table-column prop="method" label="请求方法"/>
           <el-table-column prop="description" label="描述"/>
+          <el-table-column prop="updated_at" label="更新时间" :formatter="formatDate"  sortable/>
           <el-table-column label="操作">
             <template #default="scope">
               <el-button type="primary" text icon="Edit" size="small" @click="editDialog(scope.row)">编辑</el-button>
@@ -135,6 +136,7 @@ import {type FormInstance, type FormRules, ElMessage, ElMessageBox} from "elemen
 import {usePagination} from "@/hooks/usePagination"
 import {type ApiData, getApisApi, addApiApi, deleteApiApi, editApiApi, getApiGroups} from "@/api/system/api"
 import WarningBar from "@/components/WarningBar/warningBar.vue"
+import {formatDateTime} from "@/utils";
 
 defineOptions({
   name: "Api"
@@ -148,9 +150,9 @@ const searchFormData = reactive({
   api_group: [],
   method: [],
   description: "",
-  orderKey: "",
+  orderKey: "updated_at",
   // 默认升序
-  desc: false
+  desc: true
 })
 
 const methodOptions = [
@@ -169,6 +171,10 @@ const handleSearch = () => {
 
 const tableData = ref<ApiData[]>([])
 const ApiGroupOptions = ref<any[]>([])
+
+const formatDate = (row: any) => {
+  return formatDateTime(row.UpdatedAt)
+}
 
 const getTableData = async () => {
   loading.value = true

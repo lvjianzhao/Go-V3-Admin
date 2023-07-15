@@ -11,6 +11,7 @@ import (
 	systemReq "server/model/system/request"
 	systemRep "server/model/system/response"
 	"server/utils"
+	"strconv"
 )
 
 type ApiApi struct{}
@@ -46,6 +47,8 @@ func (a *ApiApi) GetApis(c *gin.Context) {
 	apiSp.ApiGroup = c.Query("api_group")
 	apiSp.Page, _ = utils.StringToInt(c.Query("page"))
 	apiSp.PageSize, _ = utils.StringToInt(c.Query("pageSize"))
+	apiSp.OrderKey = c.Query("orderKey")
+	apiSp.Desc, _ = strconv.ParseBool(c.Query("desc"))
 
 	if list, total, err := apiService.GetApis(apiSp); err != nil {
 		response.FailWithMessage("获取失败", c)
