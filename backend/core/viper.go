@@ -2,16 +2,13 @@ package core
 
 import (
 	"fmt"
-	"server/core/internal"
 	"server/global"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
-func Viper() *viper.Viper {
-	config := internal.ConfigFile
-
+func Viper(config string) *viper.Viper {
 	v := viper.New()
 	v.SetConfigFile(config)
 	v.SetConfigType("yaml")
