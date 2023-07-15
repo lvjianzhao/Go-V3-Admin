@@ -152,7 +152,7 @@ const operateAction = (formEl: FormInstance | undefined) => {
         const res = await editRoleApi({ id: activeRow.value.ID, roleName: formData.roleName })
         if (res.code === 0) {
           ElMessage({ type: "success", message: res.msg })
-          const index = tableData.value.indexOf(activeRow)
+          const index = tableData.value.indexOf(activeRow.value)
           tableData.value[index].roleName = formData.roleName
         }
       }
