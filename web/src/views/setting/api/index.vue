@@ -1,90 +1,93 @@
 <template>
   <div class="app-container">
-    <el-card v-loading="loading" shadow="never" class="search-wrapper">
-      <el-form ref="searchFormRef" :inline="true" :model="searchFormData">
-        <el-form-item prop="path">
-          <el-input v-model.trim="searchFormData.path" placeholder="路径"/>
-        </el-form-item>
-        <el-form-item prop="group">
-          <el-select
-            v-model.trim="searchFormData.api_group"
-            filterable
-            multiple
-            collapse-tags
-            collapse-tags-tooltip
-            :max-collapse-tags="2"
-            style="width: 230px"
-            placeholder="API分组"
-            :clearable="true"
-          >
-            <el-option v-for="item in ApiGroupOptions" :key="item" :label="String(item)" :value="item"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="method">
-          <el-select
-            v-model="searchFormData.method"
-            filterable
-            multiple
-            collapse-tags
-            collapse-tags-tooltip
-            :max-collapse-tags="1"
-            placeholder="方法"
-            :clearable="true"
-          >
-            <el-option v-for="item in methodOptions" :key="item.value" :label="item.label" :value="item.value"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="description">
-          <el-input v-model.trim="searchFormData.description" placeholder="API描述"/>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="Search" @click="handleSearch">搜索</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-    <el-card v-loading="loading" shadow="never">
-      <div class="toolbar-wrapper">
-        <div>
-          <el-button type="primary" icon="CirclePlus" @click="addDialog">新增</el-button>
+    <el-space wrap fill style="width: 100%" size="large">
+      <el-card v-loading="loading" shadow="never">
+        <el-form ref="searchFormRef" :inline="true" :model="searchFormData"
+                 @keyup.enter="handleSearch">
+          <el-form-item prop="path">
+            <el-input v-model.trim="searchFormData.path" placeholder="路径" clearable/>
+          </el-form-item>
+          <el-form-item prop="group">
+            <el-select
+              v-model.trim="searchFormData.api_group"
+              filterable
+              multiple
+              collapse-tags
+              collapse-tags-tooltip
+              :max-collapse-tags="2"
+              style="width: 230px"
+              placeholder="API分组"
+              :clearable="true"
+            >
+              <el-option v-for="item in ApiGroupOptions" :key="item" :label="String(item)" :value="item"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="method">
+            <el-select
+              v-model="searchFormData.method"
+              filterable
+              multiple
+              collapse-tags
+              collapse-tags-tooltip
+              :max-collapse-tags="1"
+              placeholder="方法"
+              :clearable="true"
+            >
+              <el-option v-for="item in methodOptions" :key="item.value" :label="item.label" :value="item.value"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="description">
+            <el-input v-model.trim="searchFormData.description" placeholder="API描述" clearable/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="Search" @click="handleSearch">搜索</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
+      <el-card v-loading="loading" shadow="never">
+        <div class="toolbar-wrapper">
+          <div>
+            <el-button type="primary" icon="CirclePlus" @click="addDialog">新增</el-button>
+          </div>
+          <div>
+            <el-tooltip content="刷新" effect="light">
+              <el-button type="primary" icon="RefreshRight" circle plain @click="getTableData"/>
+            </el-tooltip>
+          </div>
         </div>
-        <div>
-          <el-tooltip content="刷新" effect="light">
-            <el-button type="primary" icon="RefreshRight" circle plain @click="getTableData"/>
-          </el-tooltip>
+        <div class="table-wrapper">
+          <el-table :data="tableData" @sort-change="handleSortChange">
+            <el-table-column prop="ID" label="ID"/>
+            <el-table-column prop="path" label="路径"/>
+            <el-table-column prop="api_group" label="分组"/>
+            <el-table-column prop="method" label="请求方法"/>
+            <el-table-column prop="description" label="描述"/>
+            <el-table-column prop="updated_at" label="更新时间" :formatter="formatDate" sortable/>
+            <el-table-column label="操作">
+              <template #default="scope">
+                <el-button type="primary" text icon="Edit" size="small" @click="editDialog(scope.row)">编辑</el-button>
+                <el-button type="danger" text icon="Delete" size="small" @click="handleDeleteApi(scope.row)"
+                >删除
+                </el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
-      </div>
-      <div class="table-wrapper">
-        <el-table :data="tableData" @sort-change="handleSortChange">
-          <el-table-column prop="ID" label="ID"/>
-          <el-table-column prop="path" label="路径"/>
-          <el-table-column prop="api_group" label="分组"/>
-          <el-table-column prop="method" label="请求方法"/>
-          <el-table-column prop="description" label="描述"/>
-          <el-table-column prop="updated_at" label="更新时间" :formatter="formatDate"  sortable/>
-          <el-table-column label="操作">
-            <template #default="scope">
-              <el-button type="primary" text icon="Edit" size="small" @click="editDialog(scope.row)">编辑</el-button>
-              <el-button type="danger" text icon="Delete" size="small" @click="handleDeleteApi(scope.row)"
-              >删除
-              </el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="pager-wrapper">
-        <el-pagination
-          background
-          :layout="paginationData.layout"
-          :page-sizes="paginationData.pageSizes"
-          :total="paginationData.total"
-          :page-size="paginationData.pageSize"
-          :currentPage="paginationData.currentPage"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </el-card>
+        <div class="pager-wrapper">
+          <el-pagination
+            background
+            :layout="paginationData.layout"
+            :page-sizes="paginationData.pageSizes"
+            :total="paginationData.total"
+            :page-size="paginationData.pageSize"
+            :currentPage="paginationData.currentPage"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+      </el-card>
+    </el-space>
     <el-dialog
       v-model="dialogVisible"
       :title="dialogTitle"
@@ -333,11 +336,4 @@ const editDialog = (row: ApiData) => {
 </script>
 
 <style lang="scss" scoped>
-.search-wrapper {
-  margin-bottom: 20px;
-
-  :deep(.el-card__body) {
-    padding-bottom: 2px;
-  }
-}
 </style>

@@ -27,7 +27,7 @@
             <el-table-column prop="ID" label="ID" width="80"/>
             <el-table-column prop="username" label="用户名" align="center"/>
             <el-table-column prop="phone" label="手机号" align="center"/>
-            <el-table-column prop="email" label="邮箱" align="center"/>
+            <el-table-column prop="email" label="邮箱" align="center" min-width="100px"/>
             <el-table-column prop="role" label="角色" align="center">
               <template #default="scope">
                 <el-tag type="success">{{ scope.row.role }}</el-tag>
@@ -47,7 +47,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column fixed="right" label="操作" align="center" min-width="200px">
+            <el-table-column fixed="right" label="操作" align="center" min-width="120px">
               <template #default="scope">
                 <el-button type="primary" text icon="Edit" size="small" @click="editDialog(scope.row)">编辑</el-button>
                 <el-button type="primary" text icon="Key" size="small" @click="modifyDialog(scope.row)"
