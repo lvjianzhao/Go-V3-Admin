@@ -28,14 +28,23 @@ export interface UsersResponsePageInfo {
   pageSize: number
 }
 
+export interface UsersRequestData {
+  /** 当前页码 */
+  currentPage?: number
+  /** 查询条数 */
+  size?: number
+  /** 查询参数：用户名 */
+  name?: string
+}
+
 type UsersResponseData = ApiResponseData<UsersResponsePageInfo>
 
 /** 获取所有用户 */
-export function getUsersApi(data: PageInfo) {
+export function getUsersApi(params: UsersRequestData) {
   return request<UsersResponseData>({
     url: "/user/getUsers",
-    method: "post",
-    data: data
+    method: "get",
+    params
   })
 }
 

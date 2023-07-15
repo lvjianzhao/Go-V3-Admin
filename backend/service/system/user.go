@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"server/global"
-	"server/model/common/request"
 	systemModel "server/model/system"
 	systemReq "server/model/system/request"
 	systemRes "server/model/system/response"
@@ -34,19 +33,23 @@ func (us *UserService) GetUserInfo(userId uint) (userResults systemRes.UserResul
 }
 
 // GetUsers 获取所有用户
-func (us *UserService) GetUsers(pageInfo request.PageInfo) ([]systemRes.UserResult, int64, error) {
+func (us *UserService) GetUsers(userSp systemReq.UserSearchParams) ([]systemRes.UserResult, int64, error) {
 	var userResults []systemRes.UserResult
 	var total int64
 
 	db := global.TD27_DB.Model(&systemModel.UserModel{})
+
+	if userSp.Name != "" {
+		db = db.Where("username LIKE ?", "%"+userSp.Name+"%")
+	}
 
 	// 分页
 	err := db.Count(&total).Error
 	if err != nil {
 		return userResults, total, fmt.Errorf("分页count -> %v", err)
 	} else {
-		limit := pageInfo.PageSize
-		offset := pageInfo.PageSize * (pageInfo.Page - 1)
+		limit := userSp.PageSize
+		offset := userSp.PageSize * (userSp.Page - 1)
 		db = db.Limit(limit).Offset(offset)
 		//err = db.Find(&list).Error
 		// 左连接 查询出role_name

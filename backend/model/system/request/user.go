@@ -1,5 +1,7 @@
 package request
 
+import "server/model/common/request"
+
 // Login User login structure
 type Login struct {
 	Username  string `json:"username" validate:"required"`  // 用户名
@@ -36,4 +38,10 @@ type ModifyPass struct {
 type SwitchActive struct {
 	Id     uint `json:"id" validate:"required"`
 	Active bool `json:"active"`
+}
+
+// UserSearchParams User分页条件查询及排序结构体
+type UserSearchParams struct {
+	Name string `json:"name"`
+	request.PageInfo
 }

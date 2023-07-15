@@ -1,6 +1,7 @@
 package system
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
@@ -30,16 +31,19 @@ func (ua *UserApi) GetUserInfo(c *gin.Context) {
 
 // GetUsers 获取所有用户
 func (ua *UserApi) GetUsers(c *gin.Context) {
-	var pageInfo request.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
+	var userSp systemReq.UserSearchParams
+	userSp.Name = c.Query("name")
+	userSp.Page, _ = utils.StringToInt(c.Query("page"))
+	userSp.PageSize, _ = utils.StringToInt(c.Query("pageSize"))
 
-	if list, total, err := userService.GetUsers(pageInfo); err != nil {
-		response.FailWithMessage("获取失败", c)
-		global.TD27_LOG.Error("获取users失败", zap.Error(err))
+	if list, total, err := userService.GetUsers(userSp); err != nil {
+		msg := fmt.Sprintf("获取users失败, error: %s\n", err)
+		response.FailWithMessage(msg, c)
+		global.TD27_LOG.Error(msg)
 	} else {
 		response.OkWithDetailed(response.PageResult{
-			Page:     pageInfo.Page,
-			PageSize: pageInfo.PageSize,
+			Page:     userSp.Page,
+			PageSize: userSp.PageSize,
 			Total:    total,
 			List:     list,
 		}, "获取成功", c)
