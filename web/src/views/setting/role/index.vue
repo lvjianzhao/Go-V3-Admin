@@ -48,7 +48,7 @@
         style="width: 95%; margin-top: 15px"
       >
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="formData.roleName" autocomplete="off"/>
+          <el-input v-model.trim="formData.roleName" autocomplete="off"/>
         </el-form-item>
       </el-form>
       <template #footer>

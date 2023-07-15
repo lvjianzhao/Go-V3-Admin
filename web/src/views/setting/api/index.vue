@@ -3,11 +3,11 @@
     <el-card v-loading="loading" shadow="never" class="search-wrapper">
       <el-form ref="searchFormRef" :inline="true" :model="searchFormData">
         <el-form-item prop="path">
-          <el-input v-model="searchFormData.path" placeholder="路径"/>
+          <el-input v-model.trim="searchFormData.path" placeholder="路径"/>
         </el-form-item>
         <el-form-item prop="group">
           <el-select
-            v-model="searchFormData.api_group"
+            v-model.trim="searchFormData.api_group"
             filterable
             multiple
             collapse-tags
@@ -35,7 +35,7 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="description">
-          <el-input v-model="searchFormData.description" placeholder="API描述"/>
+          <el-input v-model.trim="searchFormData.description" placeholder="API描述"/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" @click="handleSearch">搜索</el-button>
@@ -95,7 +95,7 @@
       <warning-bar title="新增接口，需要在角色管理内配置权限才可使用"/>
       <el-form ref="formRef" :model="opFormData" :rules="addFormRules" label-width="80px">
         <el-form-item label="API路径" prop="path">
-          <el-input v-model="opFormData.path"/>
+          <el-input v-model.trim="opFormData.path"/>
         </el-form-item>
         <el-form-item prop="method" label="请求方法">
           <el-select
@@ -114,10 +114,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="API分组" prop="api_group">
-          <el-input v-model="opFormData.api_group"/>
+          <el-input v-model.trim="opFormData.api_group"/>
         </el-form-item>
         <el-form-item label="API描述" prop="description">
-          <el-input v-model="opFormData.description"/>
+          <el-input v-model.trim="opFormData.description"/>
         </el-form-item>
       </el-form>
       <template #footer>

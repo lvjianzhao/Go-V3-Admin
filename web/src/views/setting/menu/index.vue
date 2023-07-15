@@ -58,22 +58,22 @@
           />
         </el-form-item>
         <el-form-item label="路由名称" prop="name" style="width: 30%">
-          <el-input v-model="formData.name" />
+          <el-input v-model.trim="formData.name" />
         </el-form-item>
         <el-form-item label="路由路径" prop="path" style="width: 30%">
-          <el-input v-model="formData.path" />
+          <el-input v-model.trim="formData.path" />
         </el-form-item>
         <el-form-item label="前端组件路径" prop="component" style="width: 30%">
-          <el-input v-model="formData.component" />
+          <el-input v-model.trim="formData.component" />
         </el-form-item>
         <el-form-item label="重定向" prop="redirect" style="width: 30%">
-          <el-input v-model="formData.redirect" />
+          <el-input v-model.trim="formData.redirect" />
         </el-form-item>
         <el-form-item label="展示名称" prop="meta.title" style="width: 30%">
-          <el-input v-model="formData.meta.title" />
+          <el-input v-model.trim="formData.meta.title" />
         </el-form-item>
         <el-form-item label="排序" prop="sort" style="width: 30%">
-          <el-input-number v-model="formData.sort" :min="1" />
+          <el-input-number v-model.trim="formData.sort" :min="1" />
         </el-form-item>
         <el-form-item label="是否隐藏" prop="meta.hidden" style="width: 30%">
           <el-select v-model="formData.meta.hidden">

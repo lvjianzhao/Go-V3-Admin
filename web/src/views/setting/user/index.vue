@@ -92,22 +92,22 @@
         style="width: 95%; margin-top: 15px"
       >
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="formData.username" autocomplete="off"/>
+          <el-input v-model.trim="formData.username" autocomplete="off"/>
         </el-form-item>
         <el-form-item label="密码" prop="password" v-if="kind === 'Add'">
-          <el-input v-model="formData.password" autocomplete="off" type="password" show-password/>
+          <el-input v-model.trim="formData.password" autocomplete="off" type="password" show-password/>
         </el-form-item>
         <el-form-item label="手机号码" prop="phone">
-          <el-input v-model="formData.phone" autocomplete="off"/>
+          <el-input v-model.trim="formData.phone" autocomplete="off"/>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="formData.email" autocomplete="off"/>
+          <el-input v-model.trim="formData.email" autocomplete="off"/>
         </el-form-item>
         <el-form-item label="状态" prop="active">
-          <el-switch v-model="formData.active" active-text="启用" inactive-text="禁用"/>
+          <el-switch v-model.trim="formData.active" active-text="启用" inactive-text="禁用"/>
         </el-form-item>
         <el-form-item label="角色" prop="roleId" required>
-          <el-select v-model="formData.roleId">
+          <el-select v-model.trim="formData.roleId">
             <el-option v-for="role in roleOptions" :key="role.ID" :label="role.roleName" :value="role.ID"/>
           </el-select>
         </el-form-item>
@@ -129,13 +129,13 @@
         style="width: 95%; margin-top: 15px"
       >
         <el-form-item label="旧密码" prop="oldPassword">
-          <el-input v-model="mpFormData.oldPassword" autocomplete="off" type="password" show-password/>
+          <el-input v-model.trim="mpFormData.oldPassword" autocomplete="off" type="password" show-password/>
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input v-model="mpFormData.newPassword" autocomplete="off" type="password" show-password/>
+          <el-input v-model.trim="mpFormData.newPassword" autocomplete="off" type="password" show-password/>
         </el-form-item>
         <el-form-item label="确认密码" prop="rePassword">
-          <el-input v-model="mpFormData.rePassword" autocomplete="off" type="password" show-password/>
+          <el-input v-model.trim="mpFormData.rePassword" autocomplete="off" type="password" show-password/>
         </el-form-item>
       </el-form>
       <template #footer>

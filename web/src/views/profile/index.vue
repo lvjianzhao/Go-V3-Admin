@@ -9,16 +9,16 @@
                 <el-input style="width: 400px" v-model="userInfoForm.createdAt" disabled />
               </el-form-item>
               <el-form-item label="用户名" prop="username" required>
-                <el-input style="width: 400px" v-model="userInfoForm.username" />
+                <el-input style="width: 400px" v-model.trim="userInfoForm.username" />
               </el-form-item>
               <el-form-item label="角色">
                 <el-input style="width: 400px" v-model="userInfoForm.role" disabled />
               </el-form-item>
               <el-form-item label="手机号码" prop="phone">
-                <el-input style="width: 400px" v-model="userInfoForm.phone" />
+                <el-input style="width: 400px" v-model.trim="userInfoForm.phone" />
               </el-form-item>
               <el-form-item label="邮箱" prop="email">
-                <el-input style="width: 400px" v-model="userInfoForm.email" />
+                <el-input style="width: 400px" v-model.trim="userInfoForm.email" />
               </el-form-item>
               <el-form-item style="margin-top: 40px">
                 <el-button type="primary" style="margin-right: 20px" @click="handleEditUser(userInfoFormRef)"
@@ -35,7 +35,7 @@
               <el-form-item label="旧密码" prop="oldPassword" required>
                 <el-input
                   style="width: 400px"
-                  v-model="passForm.oldPassword"
+                  v-model.trim="passForm.oldPassword"
                   placeholder="请输入旧密码"
                   type="password"
                   show-password
@@ -44,7 +44,7 @@
               <el-form-item label="新密码" prop="newPassword" required>
                 <el-input
                   style="width: 400px"
-                  v-model="passForm.newPassword"
+                  v-model.trim="passForm.newPassword"
                   placeholder="请输入新密码"
                   type="password"
                   show-password
@@ -53,7 +53,7 @@
               <el-form-item label="确认密码" prop="rePassword" required>
                 <el-input
                   style="width: 400px"
-                  v-model="passForm.rePassword"
+                  v-model.trim="passForm.rePassword"
                   placeholder="确认密码不能为空"
                   type="password"
                   show-password

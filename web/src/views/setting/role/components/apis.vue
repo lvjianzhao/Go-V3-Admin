@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="clearfix">
-      <el-input v-model="filterText" class="fitler" placeholder="筛选" />
+      <el-input v-model.trim="filterText" class="fitler" placeholder="筛选" />
       <el-button type="primary" class="button" @click="editAuthority">更新</el-button>
     </div>
     <div class="tree-content">
