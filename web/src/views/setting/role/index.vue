@@ -7,18 +7,19 @@
         </div>
         <div>
           <el-tooltip content="刷新" effect="light">
-            <el-button type="primary" icon="RefreshRight" circle plain @click="getTableData" />
+            <el-button type="primary" icon="RefreshRight" circle plain @click="getTableData"/>
           </el-tooltip>
         </div>
       </div>
       <div class="table-wrapper">
         <el-table :data="tableData">
-          <el-table-column prop="ID" label="ID" />
-          <el-table-column prop="roleName" label="名称" align="center" />
+          <el-table-column prop="ID" label="ID"/>
+          <el-table-column prop="roleName" label="名称" align="center"/>
           <el-table-column fixed="right" label="操作" align="center">
             <template #default="scope">
               <el-button type="primary" text icon="Setting" size="small" @click="openDrawer(scope.row)"
-                >设置权限</el-button
+              >设置权限
+              </el-button
               >
               <el-button type="primary" text icon="Edit" size="small" @click="editDialog(scope.row)">编辑</el-button>
               <el-button
@@ -28,14 +29,16 @@
                 size="small"
                 @click="deleteRoleAction(scope.row)"
                 :disabled="scope.row.roleName === 'root'"
-                >删除</el-button
+              >删除
+              </el-button
               >
             </template>
           </el-table-column>
         </el-table>
       </div>
     </el-card>
-    <el-dialog v-model="dialogVisible" :title="title" :before-close="handleClose" width="30%">
+    <el-dialog v-model="dialogVisible" :title="title" :before-close="handleClose" width="30%"
+               @keyup.enter="operateAction(formRef)">
       <el-form
         ref="formRef"
         :model="formData"
@@ -45,7 +48,7 @@
         style="width: 95%; margin-top: 15px"
       >
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="formData.roleName" autocomplete="off" />
+          <el-input v-model="formData.roleName" autocomplete="off"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -58,10 +61,10 @@
     <el-drawer v-if="drawer" v-model="drawer" :with-header="false" size="35%" title="角色配置">
       <el-tabs type="border-card">
         <el-tab-pane label="角色菜单">
-          <Menus ref="menus" :id="activeId" />
+          <Menus ref="menus" :id="activeId"/>
         </el-tab-pane>
         <el-tab-pane label="角色接口">
-          <Apis ref="apis" :id="activeId" />
+          <Apis ref="apis" :id="activeId"/>
         </el-tab-pane>
       </el-tabs>
     </el-drawer>
@@ -69,9 +72,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue"
-import { type FormInstance, type FormRules, ElMessage, ElMessageBox } from "element-plus"
-import { type roleData, getRolesApi, addRoleApi, deleteRoleApi, editRoleApi } from "@/api/system/role"
+import {ref, reactive} from "vue"
+import {type FormInstance, type FormRules, ElMessage, ElMessageBox} from "element-plus"
+import {type roleData, getRolesApi, addRoleApi, deleteRoleApi, editRoleApi} from "@/api/system/role"
 import Menus from "./components/menus.vue"
 import Apis from "./components/apis.vue"
 
@@ -109,7 +112,7 @@ const formData = reactive({
   roleName: ""
 })
 const formRules: FormRules = reactive({
-  roleName: [{ required: true, trigger: "blur", message: "请填写角色名称" }]
+  roleName: [{required: true, trigger: "blur", message: "请填写角色名称"}]
 })
 
 const kind = ref("")
@@ -138,9 +141,9 @@ const operateAction = (formEl: FormInstance | undefined) => {
   formEl.validate(async (valid) => {
     if (valid) {
       if (kind.value === "Add") {
-        const res = await addRoleApi({ roleName: formData.roleName })
+        const res = await addRoleApi({roleName: formData.roleName})
         if (res.code === 0) {
-          ElMessage({ type: "success", message: res.msg })
+          ElMessage({type: "success", message: res.msg})
           const tempData: roleData = {
             ID: res.data.ID,
             roleName: res.data.roleName,
@@ -149,9 +152,9 @@ const operateAction = (formEl: FormInstance | undefined) => {
           tableData.value.push(tempData)
         }
       } else if (kind.value === "Edit") {
-        const res = await editRoleApi({ id: activeRow.value.ID, roleName: formData.roleName })
+        const res = await editRoleApi({id: activeRow.value.ID, roleName: formData.roleName})
         if (res.code === 0) {
-          ElMessage({ type: "success", message: res.msg })
+          ElMessage({type: "success", message: res.msg})
           const index = tableData.value.indexOf(activeRow.value)
           tableData.value[index].roleName = formData.roleName
         }
@@ -169,14 +172,15 @@ const deleteRoleAction = (row: roleData) => {
   })
     .then(() => {
       const index = tableData.value.indexOf(row)
-      deleteRoleApi({ id: row.ID }).then((res) => {
+      deleteRoleApi({id: row.ID}).then((res) => {
         if (res.code === 0) {
-          ElMessage({ type: "success", message: res.msg })
+          ElMessage({type: "success", message: res.msg})
           tableData.value.splice(index, 1)
         }
       })
     })
-    .catch(() => {})
+    .catch(() => {
+    })
 }
 
 // 角色设置
