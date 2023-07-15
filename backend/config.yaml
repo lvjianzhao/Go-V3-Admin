@@ -81,3 +81,12 @@ crontab:
     - tableName: jwt_blacklists
     - compareField: created_at
     - interval: 168h
+
+# SMTP信息
+smtp:
+  user: "xxx@xxx.com"
+  password: "xxxxxxxx"
+  server: "smtp.partner.outlook.cn"
+  rec: "xxxx@xxxx.com"      # 系统信息的收件邮箱,支持多个邮箱，逗号分割。eg: aa@qq.com,bb@qq.com
+  port: 587
+  Starttls: true

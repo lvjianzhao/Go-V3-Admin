@@ -28,11 +28,19 @@ interface reqApis extends PageInfo {
 }
 
 // 获取所有api 分页
-export function getApisApi(data: reqApis) {
+export function getApisApi(params: reqApis) {
   return request<ApiResponseData<ApiDataPageInfo>>({
     url: "/api/getApis",
-    method: "post",
-    data
+    method: "get",
+    params
+  })
+}
+
+// 获取所有API分组
+export function getApiGroups() {
+  return request<ApiResponseData<ApiDataPageInfo>>({
+    url: "/api/apiGroups",
+    method: "get"
   })
 }
 

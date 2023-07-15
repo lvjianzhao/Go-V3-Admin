@@ -17,12 +17,26 @@ type ApiService struct{}
 
 // AddApi 添加api
 func (a *ApiService) AddApi(api systemModel.ApiModel) (*systemModel.ApiModel, error) {
-	if !errors.Is(global.TD27_DB.Where("path = ? AND method = ?", api.Path, api.Method).First(&systemModel.ApiModel{}).Error, gorm.ErrRecordNotFound) {
-		return nil, errors.New("存在相同api")
+	var err error
+	if api.Method != "" {
+		methods := strings.Split(api.Method, ",")
+		for _, method := range methods {
+			// 在这里处理每个 method 的逻辑
+			if !errors.Is(global.TD27_DB.Where("path = ? AND method = ?", api.Path, method).First(&systemModel.ApiModel{}).Error, gorm.ErrRecordNotFound) {
+				//return nil, errors.New("存在相同api")
+				msg := fmt.Sprintf("path: %s,method: %s,warn: 存在相同的API，跳过...", api.Path, api.Method)
+				global.TD27_LOG.Warn(msg)
+				break
+			}
+			api.Method = method
+			err = global.TD27_DB.Create(&api).Error
+			api.ID += 1
+			if err != nil {
+				msg := fmt.Sprintf("path: %s,method: %s,API添加失败,error: %s", api.Path, api.Method, err)
+				global.TD27_LOG.Warn(msg)
+			}
+		}
 	}
-
-	err := global.TD27_DB.Create(&api).Error
-
 	return &api, err
 }
 
@@ -42,11 +56,27 @@ func (a *ApiService) GetApis(apiSp systemReq.ApiSearchParams) ([]systemModel.Api
 	}
 
 	if apiSp.Method != "" {
-		db = db.Where("method = ?", apiSp.Method)
+		apiMethodSlice := strings.Split(apiSp.Method, ",")
+		orConditions := make([]string, len(apiMethodSlice))
+		args := make([]interface{}, len(apiMethodSlice))
+		for i, method := range apiMethodSlice {
+			// 在这里处理每个 method 的逻辑
+			orConditions[i] = "method = ?"
+			args[i] = method
+		}
+		db = db.Where(strings.Join(orConditions, " OR "), args...)
 	}
 
 	if apiSp.ApiGroup != "" {
-		db = db.Where("api_group = ?", apiSp.ApiGroup)
+		apiGroupSlice := strings.Split(apiSp.ApiGroup, ",")
+		orConditions := make([]string, len(apiGroupSlice))
+		args := make([]interface{}, len(apiGroupSlice))
+		for i, group := range apiGroupSlice {
+			// 在这里处理每个 api group 的逻辑
+			orConditions[i] = "api_group = ?"
+			args[i] = group
+		}
+		db = db.Where(strings.Join(orConditions, " OR "), args...)
 	}
 
 	var total int64
@@ -56,31 +86,22 @@ func (a *ApiService) GetApis(apiSp systemReq.ApiSearchParams) ([]systemModel.Api
 		return apiList, total, err
 	} else {
 		db = db.Limit(limit).Offset(offset)
-		if apiSp.OrderKey != "" {
-			var orderStr string
-			// 设置有效排序key 防止sql注入
-			orderMap := make(map[string]bool, 4)
-			orderMap["path"] = true
-			orderMap["api_group"] = true
-			orderMap["description"] = true
-			orderMap["method"] = true
-			if orderMap[apiSp.OrderKey] {
-				if apiSp.Desc {
-					orderStr = apiSp.OrderKey + " desc"
-				} else {
-					orderStr = apiSp.OrderKey
-				}
-			} else { // didn't match any order key in `orderMap`
-				err = fmt.Errorf("非法的排序字段: %v", apiSp.OrderKey)
-				return apiList, total, err
-			}
+		db = db.Order("updated_at DESC").Find(&apiList)
 
-			err = db.Order(orderStr).Find(&apiList).Error
-		} else {
-			err = db.Find(&apiList).Error
-		}
 	}
 	return apiList, total, err
+}
+
+// GetApiGroups 获取所有API分组
+func (a *ApiService) GetApiGroups() (apiGroups []string, total int64, error error) {
+	db := global.TD27_DB.Model(&systemModel.ApiModel{})
+	// 查询去重的 ApiGroup 列
+	err := db.Distinct("api_group").Pluck("api_group", &apiGroups).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	total = int64(len(apiGroups))
+	return
 }
 
 // GetElTreeApis 获取所有api tree

@@ -13,7 +13,8 @@ func (u *ApiRouter) InitApiRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 	apiApi := api.ApiGroupApp.SystemApiGroup.ApiApi
 	{
 		apiRouter.POST("addApi", apiApi.AddApi)
-		apiRouter.POST("getApis", apiApi.GetApis)
+		apiRouter.GET("getApis", apiApi.GetApis)
+		apiRouter.GET("apiGroups", apiApi.GetApiGroups)
 		apiRouter.POST("deleteApi", apiApi.DeleteApi)
 		apiRouter.POST("editApi", apiApi.EditApi)
 		apiRouter.POST("getElTreeApis", apiApi.GetElTreeApis)

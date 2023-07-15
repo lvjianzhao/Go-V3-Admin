@@ -10,6 +10,7 @@ import (
 	systemModel "server/model/system"
 	systemReq "server/model/system/request"
 	systemRep "server/model/system/response"
+	"server/utils"
 )
 
 type ApiApi struct{}
@@ -35,18 +36,16 @@ func (a *ApiApi) AddApi(c *gin.Context) {
 	}
 }
 
-// GetApis 列出所有api
+// GetApis 列出所有/根据条件搜索api
 func (a *ApiApi) GetApis(c *gin.Context) {
 	var apiSp systemReq.ApiSearchParams
-	_ = c.ShouldBindJSON(&apiSp)
-
-	// 参数校验
-	validate := validator.New()
-	if err := validate.Struct(&apiSp); err != nil {
-		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
-		return
-	}
+	apiSp.ApiGroup = c.Query("api_group")
+	apiSp.Path = c.Query("path")
+	apiSp.Method = c.Query("method")
+	apiSp.Description = c.Query("description")
+	apiSp.ApiGroup = c.Query("api_group")
+	apiSp.Page, _ = utils.StringToInt(c.Query("page"))
+	apiSp.PageSize, _ = utils.StringToInt(c.Query("pageSize"))
 
 	if list, total, err := apiService.GetApis(apiSp); err != nil {
 		response.FailWithMessage("获取失败", c)
@@ -57,6 +56,19 @@ func (a *ApiApi) GetApis(c *gin.Context) {
 			Total:    total,
 			Page:     apiSp.Page,
 			PageSize: apiSp.PageSize,
+		}, "获取成功", c)
+	}
+}
+
+// GetApiGroups 获取所有API分组
+func (a *ApiApi) GetApiGroups(c *gin.Context) {
+	if list, total, err := apiService.GetApiGroups(); err != nil {
+		response.FailWithMessage("获取失败", c)
+		global.TD27_LOG.Error("获取失败", zap.Error(err))
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:  list,
+			Total: total,
 		}, "获取成功", c)
 	}
 }

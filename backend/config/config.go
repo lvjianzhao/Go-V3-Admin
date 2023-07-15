@@ -10,4 +10,5 @@ type Server struct {
 	Captcha    Captcha    `mapstructure:"captcha" json:"captcha" yaml:"captcha"`
 	Cors       CORS       `mapstructure:"cors" json:"cors" yaml:"cors"`          // 跨域配置
 	Crontab    Crontab    `mapstructure:"crontab" json:"crontab" yaml:"crontab"` // 计划任务
+	SMTP       SMTP       `mapstructure:"smtp" json:"smtp" yaml:"smtp"`          // SMTP信息
 }
