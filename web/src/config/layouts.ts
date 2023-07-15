@@ -22,12 +22,12 @@ export interface LayoutSettings {
 
 export const layoutSettings: LayoutSettings = getConfigLayout() ?? {
   layoutMode: "left",
-  showSettings: true,
-  showTagsView: true,
+  showSettings: false,
+  showTagsView: false,
   fixedHeader: true,
   showLogo: true,
-  showThemeSwitch: true,
-  showScreenfull: true,
+  showThemeSwitch: false,
+  showScreenfull: false,
   cacheTagsView: false
 }
 
