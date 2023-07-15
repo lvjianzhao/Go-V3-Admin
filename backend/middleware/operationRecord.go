@@ -86,8 +86,8 @@ func OperationRecord() gin.HandlerFunc {
 		record.RespTime = time.Since(now).Milliseconds()
 		record.RespData = writer.body.String()
 
-		if err := operationRecordService.CreateOperationRecord(record); err != nil {
-			global.TD27_LOG.Error("create operation record error:", zap.Error(err))
-		}
+		//if err := operationRecordService.CreateOperationRecord(record); err != nil {
+		//	global.TD27_LOG.Error("create operation record error:", zap.Error(err))
+		//}
 	}
 }
