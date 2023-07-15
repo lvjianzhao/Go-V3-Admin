@@ -5,7 +5,6 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"path"
-
 	"server/global"
 )
 
@@ -16,7 +15,7 @@ var LumberjackLogs = new(lumberjackLogs)
 // GetWriteSyncer 获取 zapcore.WriteSyncer
 func (l *lumberjackLogs) GetWriteSyncer(level string) zapcore.WriteSyncer {
 	fileWriter := &lumberjack.Logger{
-		Filename:   path.Join(global.TD27_CONFIG.Zap.Director, level+".log"),
+		Filename:   path.Join(global.TD27_CONFIG.Zap.Director, "server.log"),
 		MaxSize:    global.TD27_CONFIG.RotateLogs.MaxSize,
 		MaxBackups: global.TD27_CONFIG.RotateLogs.MaxBackups,
 		MaxAge:     global.TD27_CONFIG.RotateLogs.MaxAge,
