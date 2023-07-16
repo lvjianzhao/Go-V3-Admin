@@ -19,11 +19,11 @@ func (z *_zap) CustomTimeEncoder(t time.Time, encoder zapcore.PrimitiveArrayEnco
 	encoder.AppendString(global.TD27_CONFIG.Zap.Prefix + t.Format("2006/01/02 - 15:04:05.000"))
 }
 
-func CustomCallerEncoder(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {
+func (z *_zap) CustomCallerEncoder(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {
 	// 获取完整的调用者路径, eg:  D:/code/vue/drawer/backend/service/customer/customer.go:16
 	fullPath := caller.FullPath()
 	// 以项目工程目录的名称作为截断, eg: [D:/code/vue/drawer/ /service/customer/customer.go:16]
-	parts := strings.Split(fullPath, "backend")
+	parts := strings.Split(fullPath, global.TD27_CONFIG.Zap.ProjectName)
 	lastPart := parts[len(parts)-1]
 	lastPartStr := fmt.Sprintf("%s", lastPart)
 	enc.AppendString(lastPartStr)
@@ -42,7 +42,7 @@ func (z *_zap) GetEncoderConfig() zapcore.EncoderConfig {
 		EncodeLevel:    global.TD27_CONFIG.Zap.ZapEncodeLevel(),
 		EncodeTime:     z.CustomTimeEncoder,
 		EncodeDuration: zapcore.SecondsDurationEncoder,
-		EncodeCaller:   CustomCallerEncoder,
+		EncodeCaller:   z.CustomCallerEncoder,
 	}
 }
 

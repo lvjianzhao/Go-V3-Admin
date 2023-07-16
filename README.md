@@ -120,3 +120,9 @@ docker-compose -f docker-compose/docker-compose.yml up -d
 [MIT](./LICENSE)
 
 Copyright (c) 2022-present [pddzl](https://github.com/pddzl)
+
+
+## todo
+1、前端增加vxe表格页面
+2、增加权限控制指令
+3、验证日志切割是否正常
