@@ -34,19 +34,19 @@ type BaseApi struct{}
 func (ba *BaseApi) Captcha(c *gin.Context) {
 	// 字符,公式,验证码配置
 	// 生成默认数字的driver
-	driver := base64Captcha.NewDriverDigit(global.TD27_CONFIG.Captcha.ImgHeight, global.TD27_CONFIG.Captcha.ImgWidth, global.TD27_CONFIG.Captcha.KeyLong, 0.7, 80)
+	driver := base64Captcha.NewDriverDigit(global.CONFIG.Captcha.ImgHeight, global.CONFIG.Captcha.ImgWidth, global.CONFIG.Captcha.KeyLong, 0.7, 80)
 	// cp := base64Captcha.NewCaptcha(driver, store.UseWithCtx(c))   // v8下使用redis
 	cp := base64Captcha.NewCaptcha(driver, store)
 	id, b64s, err := cp.Generate()
 	if err != nil {
-		global.TD27_LOG.Error("验证码获取失败!", zap.Error(err))
+		global.LOG.Error("验证码获取失败!", zap.Error(err))
 		response.FailWithMessage("验证码获取失败", c)
 		return
 	}
 	response.OkWithDetailed(systemRes.SysCaptchaResponse{
 		CaptchaId:     id,
 		PicPath:       b64s,
-		CaptchaLength: global.TD27_CONFIG.Captcha.KeyLong,
+		CaptchaLength: global.CONFIG.Captcha.KeyLong,
 	}, "验证码获取成功", c)
 }
 
@@ -65,7 +65,7 @@ func (ba *BaseApi) Login(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&login); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
@@ -73,7 +73,7 @@ func (ba *BaseApi) Login(c *gin.Context) {
 		u := &system.UserModel{Username: login.Username, Password: login.Password}
 		user, err := userService.Login(u)
 		if err != nil {
-			global.TD27_LOG.Error("登陆失败", zap.Error(err))
+			global.LOG.Error("登陆失败", zap.Error(err))
 			response.FailWithMessage("登陆失败", c)
 			return
 		}
@@ -84,28 +84,28 @@ func (ba *BaseApi) Login(c *gin.Context) {
 }
 
 func tokenNext(c *gin.Context, user *system.UserModel) {
-	j := &utils.JWT{SigningKey: []byte(global.TD27_CONFIG.JWT.SigningKey)} // 唯一签名
+	j := &utils.JWT{SigningKey: []byte(global.CONFIG.JWT.SigningKey)} // 唯一签名
 
 	claims := systemReq.CustomClaims{
 		ID:         user.ID,
 		Username:   user.Username,
 		RoleId:     user.RoleModelID,
-		BufferTime: global.TD27_CONFIG.JWT.BufferTime,
+		BufferTime: global.CONFIG.JWT.BufferTime,
 		RegisteredClaims: jwt.RegisteredClaims{
 			NotBefore: jwt.NewNumericDate(time.Now().Add(-time.Duration(1000))),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(global.TD27_CONFIG.JWT.ExpiresTime) * time.Second)),
-			Issuer:    global.TD27_CONFIG.JWT.Issuer,
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(global.CONFIG.JWT.ExpiresTime) * time.Second)),
+			Issuer:    global.CONFIG.JWT.Issuer,
 		},
 	}
 
 	token, err := j.CreateToken(claims)
 	if err != nil {
 		response.FailWithMessage("获取token失败", c)
-		global.TD27_LOG.Error("获取token失败", zap.Error(err))
+		global.LOG.Error("获取token失败", zap.Error(err))
 		return
 	}
 
-	if !global.TD27_CONFIG.System.UseMultipoint {
+	if !global.CONFIG.System.UseMultipoint {
 		response.OkWithDetailed(systemRes.LoginResponse{
 			User:      *user,
 			Token:     token,
@@ -117,7 +117,7 @@ func tokenNext(c *gin.Context, user *system.UserModel) {
 	if jwtStr, err := jwtService.GetRedisJWT(user.Username); err == redis.Nil {
 		if err := jwtService.SetRedisJWT(user.Username, token); err != nil {
 			response.FailWithMessage("设置登录状态失败", c)
-			global.TD27_LOG.Error("设置登录状态失败", zap.Error(err))
+			global.LOG.Error("设置登录状态失败", zap.Error(err))
 			return
 		}
 
@@ -128,7 +128,7 @@ func tokenNext(c *gin.Context, user *system.UserModel) {
 		}, "登录成功", c)
 	} else if err != nil {
 		response.FailWithMessage("设置登录状态失败", c)
-		global.TD27_LOG.Error("设置登录状态失败!", zap.Error(err))
+		global.LOG.Error("设置登录状态失败!", zap.Error(err))
 	} else {
 		var blackJWT system.JwtBlacklist
 		blackJWT.Jwt = jwtStr

@@ -10,14 +10,14 @@ type OperationRecordService struct{}
 
 // CreateOperationRecord 创建记录
 func (o *OperationRecordService) CreateOperationRecord(operationRecord modelSystem.OperationRecord) error {
-	return global.TD27_DB.Create(&operationRecord).Error
+	return global.DB.Create(&operationRecord).Error
 }
 
 // GetOperationRecordList 分页获取操作记录
 func (o *OperationRecordService) GetOperationRecordList(orSp systemReq.OrSearchParams) ([]modelSystem.OperationRecord, int64, error) {
 	limit := orSp.PageSize
 	offset := orSp.PageSize * (orSp.Page - 1)
-	db := global.TD27_DB.Model(&modelSystem.OperationRecord{})
+	db := global.DB.Model(&modelSystem.OperationRecord{})
 	var orList []modelSystem.OperationRecord
 
 	if orSp.Path != "" {
@@ -50,10 +50,10 @@ func (o *OperationRecordService) GetOperationRecordList(orSp systemReq.OrSearchP
 
 // DeleteOperation 删除操作记录
 func (o *OperationRecordService) DeleteOperation(id uint) error {
-	return global.TD27_DB.Unscoped().Delete(&modelSystem.OperationRecord{}, id).Error
+	return global.DB.Unscoped().Delete(&modelSystem.OperationRecord{}, id).Error
 }
 
 // DeleteOperationByIds 批量删除操作记录
 func (o *OperationRecordService) DeleteOperationByIds(ids []uint) error {
-	return global.TD27_DB.Unscoped().Delete(&[]modelSystem.OperationRecord{}, ids).Error
+	return global.DB.Unscoped().Delete(&[]modelSystem.OperationRecord{}, ids).Error
 }

@@ -46,11 +46,11 @@ func JWTAuth() gin.HandlerFunc {
 
 		// 已登录用户被管理员删除
 		var userModel system.UserModel
-		err = global.TD27_DB.Where("id = ?", claims.ID).First(&userModel).Error
+		err = global.DB.Where("id = ?", claims.ID).First(&userModel).Error
 		if err != nil {
 			response.FailWithMessage("用户不存在", c)
 			c.Abort()
-			global.TD27_LOG.Error("用户不存在")
+			global.LOG.Error("用户不存在")
 			return
 		}
 
@@ -58,20 +58,20 @@ func JWTAuth() gin.HandlerFunc {
 		if !userModel.Active {
 			response.FailWithMessage("用户被禁用", c)
 			c.Abort()
-			global.TD27_LOG.Error("用户被禁用")
+			global.LOG.Error("用户被禁用")
 			return
 		}
 
 		if claims.ExpiresAt.Unix()-time.Now().Unix() < claims.BufferTime {
-			claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Duration(global.TD27_CONFIG.JWT.ExpiresTime) * time.Second))
+			claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Duration(global.CONFIG.JWT.ExpiresTime) * time.Second))
 			newToken, _ := j.CreateTokenByOldToken(token, *claims)
 			newClaims, _ := j.ParseToken(newToken)
 			c.Header("new-token", newToken)
 			c.Header("new-expires-at", strconv.FormatInt(newClaims.ExpiresAt.Unix(), 10))
-			if global.TD27_CONFIG.System.UseMultipoint {
+			if global.CONFIG.System.UseMultipoint {
 				RedisJwtToken, err := jwtService.GetRedisJWT(newClaims.Username)
 				if err != nil {
-					global.TD27_LOG.Error("get redis jwt failed", zap.Error(err))
+					global.LOG.Error("get redis jwt failed", zap.Error(err))
 				} else { // 当之前的取成功时才进行拉黑操作
 					_ = jwtService.JoinInBlacklist(system.JwtBlacklist{Jwt: RedisJwtToken})
 				}

@@ -5,7 +5,7 @@ import (
 )
 
 type OperationRecord struct {
-	global.TD27_MODEL
+	global.MODEL
 	Ip        string `json:"ip" gorm:"column:ip;comment:请求ip"`                          // 请求ip
 	Method    string `json:"method" gorm:"column:method;comment:请求方法"`                  // 请求方法
 	Path      string `json:"path" gorm:"column:path;comment:请求路径"`                      // 请求路径

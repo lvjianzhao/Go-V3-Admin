@@ -16,7 +16,7 @@ var (
 // CasbinHandler 拦截器
 func CasbinHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if global.TD27_CONFIG.System.Env != "develop" {
+		if global.CONFIG.System.Env != "develop" {
 			waitUse, _ := utils.GetClaims(c)
 			//获取请求的PATH
 			obj := c.Request.URL.Path
@@ -27,7 +27,7 @@ func CasbinHandler() gin.HandlerFunc {
 			e := casbinService.Casbin() // 判断策略中是否存在
 			success, _ := e.Enforce(sub, obj, act)
 			if !success {
-				global.TD27_LOG.Error("接口权限不足")
+				global.LOG.Error("接口权限不足")
 				response.FailWithDetailed(gin.H{}, "接口权限不足", c)
 				c.Abort()
 				return

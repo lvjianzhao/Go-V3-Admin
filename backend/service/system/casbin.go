@@ -24,7 +24,7 @@ var (
 
 func (cs *CasbinService) Casbin() *casbin.CachedEnforcer {
 	once.Do(func() {
-		a, err := gormadapter.NewAdapterByDB(global.TD27_DB)
+		a, err := gormadapter.NewAdapterByDB(global.DB)
 		if err != nil {
 			zap.L().Error("适配数据库失败请检查casbin表是否为InnoDB引擎!", zap.Error(err))
 			return
@@ -59,7 +59,7 @@ func (cs *CasbinService) Casbin() *casbin.CachedEnforcer {
 
 // UpdateCasbinApi 更新api权限
 func (cs *CasbinService) UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod string) error {
-	err := global.TD27_DB.Debug().Model(&gormadapter.CasbinRule{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]interface{}{
+	err := global.DB.Debug().Model(&gormadapter.CasbinRule{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]interface{}{
 		"v1": newPath,
 		"v2": newMethod,
 	}).Error

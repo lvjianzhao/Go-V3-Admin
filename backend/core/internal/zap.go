@@ -16,14 +16,14 @@ var Zap = new(_zap)
 
 // CustomTimeEncoder 自定义日志输出时间格式
 func (z *_zap) CustomTimeEncoder(t time.Time, encoder zapcore.PrimitiveArrayEncoder) {
-	encoder.AppendString(global.TD27_CONFIG.Zap.Prefix + t.Format("2006/01/02 - 15:04:05.000"))
+	encoder.AppendString(global.CONFIG.Zap.Prefix + t.Format("2006/01/02 - 15:04:05.000"))
 }
 
 func (z *_zap) CustomCallerEncoder(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {
 	// 获取完整的调用者路径, eg:  D:/code/vue/drawer/backend/service/customer/customer.go:16
 	fullPath := caller.FullPath()
 	// 以项目工程目录的名称作为截断, eg: [D:/code/vue/drawer/ /service/customer/customer.go:16]
-	parts := strings.Split(fullPath, global.TD27_CONFIG.Zap.ProjectName)
+	parts := strings.Split(fullPath, global.CONFIG.Zap.ProjectName)
 	lastPart := parts[len(parts)-1]
 	lastPartStr := fmt.Sprintf("%s", lastPart)
 	enc.AppendString(lastPartStr)
@@ -37,9 +37,9 @@ func (z *_zap) GetEncoderConfig() zapcore.EncoderConfig {
 		TimeKey:        "time",
 		NameKey:        "logger",
 		CallerKey:      "caller",
-		StacktraceKey:  global.TD27_CONFIG.Zap.StacktraceKey,
+		StacktraceKey:  global.CONFIG.Zap.StacktraceKey,
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    global.TD27_CONFIG.Zap.ZapEncodeLevel(),
+		EncodeLevel:    global.CONFIG.Zap.ZapEncodeLevel(),
 		EncodeTime:     z.CustomTimeEncoder,
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   z.CustomCallerEncoder,
@@ -48,7 +48,7 @@ func (z *_zap) GetEncoderConfig() zapcore.EncoderConfig {
 
 // GetEncoder 获取 zapcore.Encoder
 func (z *_zap) GetEncoder() zapcore.Encoder {
-	if global.TD27_CONFIG.Zap.Format == "json" {
+	if global.CONFIG.Zap.Format == "json" {
 		return zapcore.NewJSONEncoder(z.GetEncoderConfig())
 	}
 	return zapcore.NewConsoleEncoder(z.GetEncoderConfig())
@@ -103,7 +103,7 @@ func (z *_zap) GetLevelPriority(level zapcore.Level) zap.LevelEnablerFunc {
 // GetZapCores 根据配置文件的Level获取 []zapcore.Core
 func (z *_zap) GetZapCores() []zapcore.Core {
 	cores := make([]zapcore.Core, 0, 7)
-	for level := global.TD27_CONFIG.Zap.TransportLevel(); level <= zapcore.FatalLevel; level++ {
+	for level := global.CONFIG.Zap.TransportLevel(); level <= zapcore.FatalLevel; level++ {
 		cores = append(cores, z.GetEncoderCore(level, z.GetLevelPriority(level)))
 	}
 	return cores

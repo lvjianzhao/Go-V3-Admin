@@ -54,7 +54,7 @@ func OperationRecord() gin.HandlerFunc {
 			var err error
 			reqParam, err = io.ReadAll(c.Request.Body)
 			if err != nil {
-				global.TD27_LOG.Error("read body from request error:", zap.Error(err))
+				global.LOG.Error("read body from request error:", zap.Error(err))
 			} else {
 				c.Request.Body = io.NopCloser(bytes.NewBuffer(reqParam))
 			}
@@ -87,7 +87,7 @@ func OperationRecord() gin.HandlerFunc {
 		record.RespData = writer.body.String()
 
 		//if err := operationRecordService.CreateOperationRecord(record); err != nil {
-		//	global.TD27_LOG.Error("create operation record error:", zap.Error(err))
+		//	global.LOG.Error("create operation record error:", zap.Error(err))
 		//}
 	}
 }

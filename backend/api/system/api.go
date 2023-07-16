@@ -25,13 +25,13 @@ func (a *ApiApi) AddApi(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&apiReq); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if instance, err := apiService.AddApi(apiReq); err != nil {
 		response.FailWithMessage("添加失败", c)
-		global.TD27_LOG.Error("添加失败", zap.Error(err))
+		global.LOG.Error("添加失败", zap.Error(err))
 	} else {
 		response.OkWithDetailed(instance, "添加成功", c)
 	}
@@ -52,7 +52,7 @@ func (a *ApiApi) GetApis(c *gin.Context) {
 
 	if list, total, err := apiService.GetApis(apiSp); err != nil {
 		response.FailWithMessage("获取失败", c)
-		global.TD27_LOG.Error("获取失败", zap.Error(err))
+		global.LOG.Error("获取失败", zap.Error(err))
 	} else {
 		response.OkWithDetailed(response.PageResult{
 			List:     list,
@@ -67,7 +67,7 @@ func (a *ApiApi) GetApis(c *gin.Context) {
 func (a *ApiApi) GetApiGroups(c *gin.Context) {
 	if list, total, err := apiService.GetApiGroups(); err != nil {
 		response.FailWithMessage("获取失败", c)
-		global.TD27_LOG.Error("获取失败", zap.Error(err))
+		global.LOG.Error("获取失败", zap.Error(err))
 	} else {
 		response.OkWithDetailed(response.PageResult{
 			List:  list,
@@ -85,13 +85,13 @@ func (a *ApiApi) DeleteApi(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&cId); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if err := apiService.DeleteApi(cId.ID); err != nil {
 		response.FailWithMessage("删除失败", c)
-		global.TD27_LOG.Error("删除失败", zap.Error(err))
+		global.LOG.Error("删除失败", zap.Error(err))
 	} else {
 		response.OkWithMessage("删除成功", c)
 	}
@@ -106,13 +106,13 @@ func (a *ApiApi) EditApi(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&eApi); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if err := apiService.EditApi(eApi); err != nil {
 		response.FailWithMessage("编辑失败", c)
-		global.TD27_LOG.Error("编辑失败", zap.Error(err))
+		global.LOG.Error("编辑失败", zap.Error(err))
 	} else {
 		response.OkWithMessage("编辑成功", c)
 	}
@@ -127,7 +127,7 @@ func (a *ApiApi) GetElTreeApis(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&cId); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 

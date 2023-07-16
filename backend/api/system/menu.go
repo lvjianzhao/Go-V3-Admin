@@ -18,13 +18,13 @@ func (ma *MenuApi) GetMenus(c *gin.Context) {
 	userInfo, err := utils.GetUserInfo(c)
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
-		global.TD27_LOG.Error("获取失败!", zap.Error(err))
+		global.LOG.Error("获取失败!", zap.Error(err))
 	}
 
 	list, err := menuService.GetMenus(userInfo.ID)
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
-		global.TD27_LOG.Error("获取失败!", zap.Error(err))
+		global.LOG.Error("获取失败!", zap.Error(err))
 	} else {
 		response.OkWithDetailed(list, "获取成功", c)
 	}
@@ -38,7 +38,7 @@ func (ma *MenuApi) AddMenu(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&menuReq); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
@@ -57,13 +57,13 @@ func (ma *MenuApi) EditMenu(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&editMenuReq); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if err := menuService.EditMenu(editMenuReq); err != nil {
 		response.FailWithMessage("编辑失败", c)
-		global.TD27_LOG.Error("编辑失败", zap.Error(err))
+		global.LOG.Error("编辑失败", zap.Error(err))
 	} else {
 		response.OkWithMessage("编辑成功", c)
 	}
@@ -77,13 +77,13 @@ func (ma *MenuApi) DeleteMenu(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&cId); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if err := menuService.DeleteMenu(cId.ID); err != nil {
 		response.FailWithMessage("删除失败", c)
-		global.TD27_LOG.Error("删除失败", zap.Error(err))
+		global.LOG.Error("删除失败", zap.Error(err))
 	} else {
 		response.OkWithMessage("删除成功", c)
 	}
@@ -97,14 +97,14 @@ func (ma *MenuApi) GetElTreeMenus(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&cId); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	list, ids, err := menuService.GetElTreeMenus(cId.ID)
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
-		global.TD27_LOG.Error("获取失败!", zap.Error(err))
+		global.LOG.Error("获取失败!", zap.Error(err))
 	} else {
 		response.OkWithDetailed(systemRep.Menu{
 			List:    list,

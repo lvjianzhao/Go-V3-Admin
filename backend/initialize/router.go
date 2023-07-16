@@ -13,18 +13,18 @@ import (
 )
 
 func Routers() *gin.Engine {
-	if global.TD27_CONFIG.System.Env == "production" {
+	if global.CONFIG.System.Env == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	Router := gin.New()
-	Router.Use(log.GinLogger(), log.GinRecovery(global.TD27_CONFIG.System.Stack))
+	Router.Use(log.GinLogger(), log.GinRecovery(global.CONFIG.System.Stack))
 
 	// 跨域，如需跨域可以打开下面的注释
 	// global.GVA_LOG.Info("use middleware cors")
 	// Router.Use(middleware.Cors()) // 直接放行全部跨域请求
 	// Router.Use(middleware.CorsByRules()) // 按照配置的规则放行跨域请求
 
-	global.TD27_LOG.Info("register swagger handler")
+	global.LOG.Info("register swagger handler")
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 路由组
@@ -54,6 +54,6 @@ func Routers() *gin.Engine {
 		systemRouter.InitOperationRecordRouter(PrivateGroup)
 	}
 
-	global.TD27_LOG.Info("router register success")
+	global.LOG.Info("router register success")
 	return Router
 }

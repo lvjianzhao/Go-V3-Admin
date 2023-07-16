@@ -22,18 +22,18 @@ func (a *ApiService) AddApi(api systemModel.ApiModel) (*systemModel.ApiModel, er
 		methods := strings.Split(api.Method, ",")
 		for _, method := range methods {
 			// 在这里处理每个 method 的逻辑
-			if !errors.Is(global.TD27_DB.Where("path = ? AND method = ?", api.Path, method).First(&systemModel.ApiModel{}).Error, gorm.ErrRecordNotFound) {
+			if !errors.Is(global.DB.Where("path = ? AND method = ?", api.Path, method).First(&systemModel.ApiModel{}).Error, gorm.ErrRecordNotFound) {
 				//return nil, errors.New("存在相同api")
 				msg := fmt.Sprintf("path: %s,method: %s,warn: 存在相同的API，跳过...", api.Path, api.Method)
-				global.TD27_LOG.Warn(msg)
+				global.LOG.Warn(msg)
 				break
 			}
 			api.Method = method
-			err = global.TD27_DB.Create(&api).Error
+			err = global.DB.Create(&api).Error
 			api.ID += 1
 			if err != nil {
 				msg := fmt.Sprintf("path: %s,method: %s,API添加失败,error: %s", api.Path, api.Method, err)
-				global.TD27_LOG.Warn(msg)
+				global.LOG.Warn(msg)
 			}
 		}
 	}
@@ -44,7 +44,7 @@ func (a *ApiService) AddApi(api systemModel.ApiModel) (*systemModel.ApiModel, er
 func (a *ApiService) GetApis(apiSp systemReq.ApiSearchParams) ([]systemModel.ApiModel, int64, error) {
 	limit := apiSp.PageSize
 	offset := apiSp.PageSize * (apiSp.Page - 1)
-	db := global.TD27_DB.Model(&systemModel.ApiModel{})
+	db := global.DB.Model(&systemModel.ApiModel{})
 	var apiList []systemModel.ApiModel
 
 	if apiSp.Path != "" {
@@ -116,7 +116,7 @@ func (a *ApiService) GetApis(apiSp systemReq.ApiSearchParams) ([]systemModel.Api
 
 // GetApiGroups 获取所有API分组
 func (a *ApiService) GetApiGroups() (apiGroups []string, total int64, error error) {
-	db := global.TD27_DB.Model(&systemModel.ApiModel{})
+	db := global.DB.Model(&systemModel.ApiModel{})
 	// 查询去重的 ApiGroup 列
 	err := db.Distinct("api_group").Pluck("api_group", &apiGroups).Error
 	if err != nil {
@@ -130,13 +130,13 @@ func (a *ApiService) GetApiGroups() (apiGroups []string, total int64, error erro
 // element-plus el-tree的数据格式
 func (a *ApiService) GetElTreeApis(roleId uint) (list []systemModel.ApiTree, checkedKey []string, err error) {
 	var apiModels []systemModel.ApiModel
-	err = global.TD27_DB.Find(&apiModels).Error
+	err = global.DB.Find(&apiModels).Error
 	if err != nil {
 		return nil, nil, fmt.Errorf("GetElTreeApis: find -> %v", err)
 	}
 
 	var apiGroup []string
-	err = global.TD27_DB.Model(&systemModel.ApiModel{}).Distinct().Pluck("api_group", &apiGroup).Error
+	err = global.DB.Model(&systemModel.ApiModel{}).Distinct().Pluck("api_group", &apiGroup).Error
 	if err != nil {
 		return nil, nil, fmt.Errorf("GetElTreeApis: apiGroup -> %v", err)
 	}
@@ -179,21 +179,21 @@ func (a *ApiService) GetElTreeApis(roleId uint) (list []systemModel.ApiTree, che
 // DeleteApi 删除指定api
 func (a *ApiService) DeleteApi(id uint) (err error) {
 	var apiModel systemModel.ApiModel
-	err = global.TD27_DB.Where("id = ?", id).First(&apiModel).Error
+	err = global.DB.Where("id = ?", id).First(&apiModel).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		global.TD27_LOG.Error("deleteApi -> 查找id", zap.Error(err))
+		global.LOG.Error("deleteApi -> 查找id", zap.Error(err))
 		return err
 	}
 
-	err = global.TD27_DB.Unscoped().Delete(&apiModel).Error
+	err = global.DB.Unscoped().Delete(&apiModel).Error
 	if err != nil {
-		global.TD27_LOG.Error("deleteApi -> 删除id", zap.Error(err))
+		global.LOG.Error("deleteApi -> 删除id", zap.Error(err))
 		return err
 	}
 
 	ok := CasbinServiceApp.ClearCasbin(1, apiModel.Path, apiModel.Method)
 	if !ok {
-		global.TD27_LOG.Warn("ApiPath: " + apiModel.Path + ",Method: " + apiModel.Method + " casbin同步清理失败")
+		global.LOG.Warn("ApiPath: " + apiModel.Path + ",Method: " + apiModel.Method + " casbin同步清理失败")
 	}
 	e := CasbinServiceApp.Casbin()
 	err = e.InvalidateCache()
@@ -206,13 +206,13 @@ func (a *ApiService) DeleteApi(id uint) (err error) {
 // EditApi 编辑api
 func (a *ApiService) EditApi(eApi systemReq.EditApi) (err error) {
 	var oldApiModel systemModel.ApiModel
-	err = global.TD27_DB.Where("id = ?", eApi.Id).First(&oldApiModel).Error
+	err = global.DB.Where("id = ?", eApi.Id).First(&oldApiModel).Error
 	if err != nil {
 		return errors.New("editApi: id不存在")
 	}
 
 	if oldApiModel.Path != eApi.Path || oldApiModel.Method != eApi.Method {
-		if !errors.Is(global.TD27_DB.Where("path = ? AND method = ?", eApi.Path, eApi.Method).First(&systemModel.ApiModel{}).Error, gorm.ErrRecordNotFound) {
+		if !errors.Is(global.DB.Where("path = ? AND method = ?", eApi.Path, eApi.Method).First(&systemModel.ApiModel{}).Error, gorm.ErrRecordNotFound) {
 			return errors.New("editApi: 存在相同接口")
 		}
 	}
@@ -222,5 +222,5 @@ func (a *ApiService) EditApi(eApi systemReq.EditApi) (err error) {
 		return fmt.Errorf("editApi: 更新casbin rule -> %v", err)
 	}
 
-	return global.TD27_DB.Debug().Model(&oldApiModel).Updates(map[string]interface{}{"path": eApi.Path, "method": eApi.Method, "api_group": eApi.ApiGroup, "description": eApi.Description}).Error
+	return global.DB.Debug().Model(&oldApiModel).Updates(map[string]interface{}{"path": eApi.Path, "method": eApi.Method, "api_group": eApi.ApiGroup, "description": eApi.Description}).Error
 }

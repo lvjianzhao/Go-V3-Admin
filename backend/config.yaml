@@ -11,7 +11,7 @@ zap:
   format: console
   prefix: ''
   director: log
-  projectName: backenda       # 你的项目名称，作为日志中的路径切割符，如果不正确，日志中打印的路径会是绝对路径
+  projectName: backend       # 你的项目名称，作为日志中的路径切割符，如果不正确，日志中打印的路径会是绝对路径
   show-line: true
   encode-level: LowercaseColorLevelEncoder
   stacktrace-key: stacktrace

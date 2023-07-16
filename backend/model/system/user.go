@@ -5,7 +5,7 @@ import (
 )
 
 type UserModel struct {
-	global.TD27_MODEL
+	global.MODEL
 	Username    string `json:"username" gorm:"index;unique;comment:用户名"` // 用户名
 	Password    string `json:"-"  gorm:"comment:密码"`
 	Phone       string `json:"phone"  gorm:"comment:手机号"` // 手机号

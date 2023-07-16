@@ -8,7 +8,7 @@ import (
 )
 
 func SendEmail(subject, msg string, recipients []string) (err error) {
-	smtp := global.TD27_CONFIG.SMTP
+	smtp := global.CONFIG.SMTP
 	emailBody := fmt.Sprintf("<h3>%v</h3>", msg)
 	emailFrom := fmt.Sprintf("go-admin <%v>", smtp.Username)
 

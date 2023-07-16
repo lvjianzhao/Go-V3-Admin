@@ -12,11 +12,11 @@ import (
 )
 
 var (
-	TD27_VP                  *viper.Viper
-	TD27_CONFIG              config.Server
-	TD27_LOG                 *zap.Logger
-	TD27_DB                  *gorm.DB
-	TD27_CRON                *cron.Cron
-	TD27_REDIS               *redis.Client
-	TD27_Concurrency_Control = &singleflight.Group{}
+	VP                  *viper.Viper
+	CONFIG              config.Server
+	LOG                 *zap.Logger
+	DB                  *gorm.DB
+	CRON                *cron.Cron
+	REDIS               *redis.Client
+	Concurrency_Control = &singleflight.Group{}
 )

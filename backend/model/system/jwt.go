@@ -5,6 +5,6 @@ import (
 )
 
 type JwtBlacklist struct {
-	global.TD27_MODEL
+	global.MODEL
 	Jwt string `gorm:"type:text;comment:jwt"`
 }

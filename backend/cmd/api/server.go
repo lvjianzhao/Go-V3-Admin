@@ -10,11 +10,9 @@ import (
 	"server/global"
 	"server/initialize"
 	"server/pkg/crontab"
-	"sync"
 )
 
 var (
-	wg       sync.WaitGroup
 	config   string
 	StartCmd = &cobra.Command{
 		Use:     "serve",
@@ -41,29 +39,29 @@ func usage() {
 
 func setup() {
 	// 1. 读取配置
-	global.TD27_VP = core.Viper(config) // 初始化viper
+	global.VP = core.Viper(config) // 初始化viper
 	// 2. 初始化日志以及数据库连接
-	global.TD27_LOG = core.Zap() // 初始化zap日志
-	zap.ReplaceGlobals(global.TD27_LOG)
-	global.TD27_DB = initialize.Gorm() // gorm连接数据库
+	global.LOG = core.Zap() // 初始化zap日志
+	zap.ReplaceGlobals(global.LOG)
+	global.DB = initialize.Gorm() // gorm连接数据库
 
-	if global.TD27_DB == nil {
-		global.TD27_LOG.Error("mysql连接失败，退出程序")
+	if global.DB == nil {
+		global.LOG.Error("mysql连接失败，退出程序")
 		os.Exit(127)
 	} else {
-		initialize.RegisterTables(global.TD27_DB) // 初始化表
+		initialize.RegisterTables(global.DB) // 初始化表
 	}
 
 	// 3. 开启定时任务
-	global.TD27_CRON = cron.New()
+	global.CRON = cron.New()
 	crontab.StartCrontab()
 }
 
 func run() error {
 	// 程序结束前关闭数据库连接以及停止定时任务
-	db, _ := global.TD27_DB.DB()
+	db, _ := global.DB.DB()
 	defer db.Close()
-	defer global.TD27_CRON.Stop()
+	defer global.CRON.Stop()
 
 	core.RunServer()
 	return nil

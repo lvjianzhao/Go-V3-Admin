@@ -30,16 +30,16 @@ func (ra *RoleApi) AddRole(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&roleReq); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if role, err := roleService.AddRole(roleReq.RoleName); err != nil {
 		response.FailWithMessage("添加失败", c)
-		global.TD27_LOG.Error("添加角色失败", zap.Error(err))
+		global.LOG.Error("添加角色失败", zap.Error(err))
 	} else {
 		if err = casbinService.EditCasbin(role.ID, systemReq.DefaultCasbin()); err != nil {
-			global.TD27_LOG.Error("更新casbin rule失败", zap.Error(err))
+			global.LOG.Error("更新casbin rule失败", zap.Error(err))
 		}
 		response.OkWithDetailed(role, "添加成功", c)
 	}
@@ -54,13 +54,13 @@ func (ra *RoleApi) DeleteRole(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&cId); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if err := roleService.DeleteRole(cId.ID); err != nil {
 		response.FailWithMessage("删除失败", c)
-		global.TD27_LOG.Error("删除角色失败", zap.Error(err))
+		global.LOG.Error("删除角色失败", zap.Error(err))
 	} else {
 		response.OkWithMessage("删除成功", c)
 	}
@@ -75,13 +75,13 @@ func (ra *RoleApi) EditRole(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&eRole); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if err := roleService.EditRole(eRole); err != nil {
 		response.FailWithMessage("编辑失败", c)
-		global.TD27_LOG.Error("编辑失败", zap.Error(err))
+		global.LOG.Error("编辑失败", zap.Error(err))
 	} else {
 		response.OkWithMessage("编辑成功", c)
 	}
@@ -96,13 +96,13 @@ func (ra *RoleApi) EditRoleMenu(c *gin.Context) {
 	validate := validator.New()
 	if err := validate.Struct(&editRE); err != nil {
 		response.FailWithMessage("请求参数错误", c)
-		global.TD27_LOG.Error("请求参数错误", zap.Error(err))
+		global.LOG.Error("请求参数错误", zap.Error(err))
 		return
 	}
 
 	if err := roleService.EditRoleMenu(editRE.RoleId, editRE.Ids); err != nil {
 		response.FailWithMessage("编辑失败", c)
-		global.TD27_LOG.Error("编辑失败", zap.Error(err))
+		global.LOG.Error("编辑失败", zap.Error(err))
 	} else {
 		response.OkWithMessage("编辑成功", c)
 	}
