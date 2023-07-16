@@ -18,6 +18,8 @@ func (u *ApiRouter) InitApiRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 		apiRouter.POST("deleteApi", apiApi.DeleteApi)
 		apiRouter.POST("editApi", apiApi.EditApi)
 		apiRouter.POST("getElTreeApis", apiApi.GetElTreeApis)
+		// 测试接口
+		apiRouter.GET("table", apiApi.GetTable)
 	}
 	return apiRouter
 }

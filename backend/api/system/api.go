@@ -16,6 +16,115 @@ import (
 
 type ApiApi struct{}
 
+// table  测试数据
+func (a *ApiApi) GetTable(c *gin.Context) {
+	list := []map[string]interface{}{
+		{
+			"id":         "630000201510116854",
+			"username":   "Shirley Anderson",
+			"phone":      "18575455423",
+			"email":      "s.kdqjzhvbt@sjopf.sl",
+			"roles":      "admin",
+			"status":     true,
+			"createTime": "1983-03-12 15:49:10",
+		},
+		{
+			"id":         "440000200009077556",
+			"username":   "Helen Martin",
+			"phone":      "13805108397",
+			"email":      "h.pofemkqqyt@wotbxcx.tt",
+			"roles":      "editor",
+			"status":     false,
+			"createTime": "1995-08-28 04:13:18",
+		},
+		{
+			"id":         "630000201510116854",
+			"username":   "Shirley Anderson",
+			"phone":      "18575455423",
+			"email":      "s.kdqjzhvbt@sjopf.sl",
+			"roles":      "admin",
+			"status":     true,
+			"createTime": "1983-03-12 15:49:10",
+		},
+		{
+			"id":         "440000200009077556",
+			"username":   "Helen Martin",
+			"phone":      "13805108397",
+			"email":      "h.pofemkqqyt@wotbxcx.tt",
+			"roles":      "editor",
+			"status":     false,
+			"createTime": "1995-08-28 04:13:18",
+		},
+		{
+			"id":         "630000201510116854",
+			"username":   "Shirley Anderson",
+			"phone":      "18575455423",
+			"email":      "s.kdqjzhvbt@sjopf.sl",
+			"roles":      "admin",
+			"status":     true,
+			"createTime": "1983-03-12 15:49:10",
+		},
+		{
+			"id":         "440000200009077556",
+			"username":   "Helen Martin",
+			"phone":      "13805108397",
+			"email":      "h.pofemkqqyt@wotbxcx.tt",
+			"roles":      "editor",
+			"status":     false,
+			"createTime": "1995-08-28 04:13:18",
+		},
+		{
+			"id":         "630000201510116854",
+			"username":   "Shirley Anderson",
+			"phone":      "18575455423",
+			"email":      "s.kdqjzhvbt@sjopf.sl",
+			"roles":      "admin",
+			"status":     true,
+			"createTime": "1983-03-12 15:49:10",
+		},
+		{
+			"id":         "440000200009077556",
+			"username":   "Helen Martin",
+			"phone":      "13805108397",
+			"email":      "h.pofemkqqyt@wotbxcx.tt",
+			"roles":      "editor",
+			"status":     false,
+			"createTime": "1995-08-28 04:13:18",
+		},
+		{
+			"id":         "630000201510116854",
+			"username":   "Shirley Anderson",
+			"phone":      "18575455423",
+			"email":      "s.kdqjzhvbt@sjopf.sl",
+			"roles":      "admin",
+			"status":     true,
+			"createTime": "1983-03-12 15:49:10",
+		},
+		{
+			"id":         "440000200009077556",
+			"username":   "Helen Martin",
+			"phone":      "13805108397",
+			"email":      "h.pofemkqqyt@wotbxcx.tt",
+			"roles":      "editor",
+			"status":     false,
+			"createTime": "1995-08-28 04:13:18",
+		},
+	}
+
+	apiSp := struct {
+		Page     int
+		PageSize int
+	}{Page: 1, PageSize: 10}
+
+	response.OkWithDetailed(response.PageResult{
+		List:     list,
+		Total:    10,
+		Page:     apiSp.Page,
+		PageSize: apiSp.PageSize,
+	}, "获取成功", c)
+
+}
+
 // AddApi 添加api
 func (a *ApiApi) AddApi(c *gin.Context) {
 	var apiReq systemModel.ApiModel
