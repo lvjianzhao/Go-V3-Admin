@@ -363,8 +363,8 @@ const crudStore = reactive({
       </template>
       <!-- 操作 -->
       <template #row-operate="{ row }">
-        <el-button link type="primary" @click="crudStore.onShowModal(row)">修改</el-button>
-        <el-button link type="danger" @click="crudStore.onDelete(row)">删除</el-button>
+        <el-button link type="primary" icon="Edit" @click="crudStore.onShowModal(row)">修改</el-button>
+        <el-button link type="danger" icon="Delete" @click="crudStore.onDelete(row)">删除</el-button>
       </template>
     </vxe-grid>
     <!-- 弹窗 -->
