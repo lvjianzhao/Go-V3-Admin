@@ -103,6 +103,27 @@ func (ms *MenuService) AddMenu(menuRaw systemReq.Menu) bool {
 		return false
 	}
 
+	// 自动给admin角色增加权限
+	var allMenuModel []systemModel.MenuModel
+	err := global.DB.Find(&allMenuModel).Error
+	if err != nil {
+		global.LOG.Error("AddMenu 查询所有menu", zap.Error(err))
+		return false
+	}
+
+	var roleModel systemModel.RoleModel
+	err = global.DB.Model(&roleModel).Where("role_name = ?", "admin").First(&roleModel).Error
+	if err != nil {
+		global.LOG.Error("查询admin的id失败,", zap.Error(err))
+	}
+
+	global.DB.Find(&allMenuModel)
+	err = global.DB.Model(&roleModel).Association("Menus").Replace(allMenuModel)
+	if err != nil {
+		global.LOG.Error("AddMenu 替换menu", zap.Error(err))
+		return false
+	}
+
 	return true
 }
 
