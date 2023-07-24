@@ -1,8 +1,8 @@
 package request
 
 type CasbinInfo struct {
-	Path   string `json:"path"`   // 路径
-	Method string `json:"method"` // 方法
+	Path   string `json:"path" gorm:"column:path"`     // 路径
+	Method string `json:"method" gorm:"column:method"` // 方法
 }
 
 type ReqCasbin struct {

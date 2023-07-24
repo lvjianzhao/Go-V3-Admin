@@ -18,25 +18,50 @@ type ApiService struct{}
 // AddApi 添加api
 func (a *ApiService) AddApi(api systemModel.ApiModel) (*systemModel.ApiModel, error) {
 	var err error
+	tx := global.DB.Begin()
 	if api.Method != "" {
 		methods := strings.Split(api.Method, ",")
 		for _, method := range methods {
 			// 在这里处理每个 method 的逻辑
-			if !errors.Is(global.DB.Where("path = ? AND method = ?", api.Path, method).First(&systemModel.ApiModel{}).Error, gorm.ErrRecordNotFound) {
+			if !errors.Is(tx.Where("path = ? AND method = ?", api.Path, method).First(&systemModel.ApiModel{}).Error, gorm.ErrRecordNotFound) {
 				//return nil, errors.New("存在相同api")
 				msg := fmt.Sprintf("path: %s,method: %s,warn: 存在相同的API，跳过...", api.Path, api.Method)
 				global.LOG.Warn(msg)
 				break
 			}
 			api.Method = method
-			err = global.DB.Create(&api).Error
+			err = tx.Create(&api).Error
 			api.ID += 1
 			if err != nil {
 				msg := fmt.Sprintf("path: %s,method: %s,API添加失败,error: %s", api.Path, api.Method, err)
 				global.LOG.Warn(msg)
+				tx.Rollback()
+				return &api, err
 			}
 		}
 	}
+	// 自动给admin角色增加权限
+	var roleModel systemModel.RoleModel
+	err = tx.Model(&roleModel).Where("role_name = ?", "admin").First(&roleModel).Error
+	if err != nil {
+		global.LOG.Error("查询admin的id失败,", zap.Error(err))
+	}
+	var allApiModel []systemReq.CasbinInfo
+	err = tx.Model(&systemModel.ApiModel{}).Select("path", "method").Find(&allApiModel).Error
+	if err != nil {
+		global.LOG.Error("AddApi 查询所有api", zap.Error(err))
+		tx.Rollback()
+		return &api, err
+	}
+
+	var cs CasbinService
+	err = cs.EditCasbin(roleModel.ID, allApiModel)
+	if err != nil {
+		global.LOG.Error("新增api后自动授权给admin失败", zap.Error(err))
+		tx.Rollback()
+		return &api, err
+	}
+	tx.Commit()
 	return &api, err
 }
 
