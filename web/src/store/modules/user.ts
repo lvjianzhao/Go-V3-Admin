@@ -1,14 +1,16 @@
-import { reactive, ref, watch } from "vue"
+import {reactive, ref, watch} from "vue"
 import store from "@/store"
-import { defineStore } from "pinia"
-import { useTagsViewStore } from "./tags-view"
-import { useSettingsStore } from "./settings"
-import { getUserInfoApi } from "@/api/system/user"
-import { type LoginRequestData, loginApi } from "@/api/system/base"
-import { usePermissionStoreHook } from "@/store/modules/permission"
+import {defineStore} from "pinia"
+import {useTagsViewStore} from "./tags-view"
+import {useSettingsStore} from "./settings"
+import {getUserInfoApi} from "@/api/system/user"
+import {type LoginRequestData, loginApi} from "@/api/system/base"
+import {usePermissionStoreHook} from "@/store/modules/permission"
+import asyncRouteSettings from "@/config/async-route"
 
 export const useUserStore = defineStore("user", () => {
   const token = ref<string>(window.localStorage.getItem("token") || "")
+  const roles = ref<string[]>([])
   const username = ref<string>("")
   const userInfo = reactive({
     id: 0,
@@ -22,6 +24,11 @@ export const useUserStore = defineStore("user", () => {
   const tagsViewStore = useTagsViewStore()
   const permissionStore = usePermissionStoreHook()
   const settingsStore = useSettingsStore()
+
+  /** 设置角色数组 */
+  const setRoles = (value: string[]) => {
+    roles.value = value
+  }
 
   /** 登录 */
   const login = async (loginData: LoginRequestData): Promise<boolean> => {
@@ -56,6 +63,9 @@ export const useUserStore = defineStore("user", () => {
           userInfo.email = res.data.email
           userInfo.role = res.data.role
           userInfo.roleId = res.data.roleId
+          // 验证返回的 roles 是否为一个非空数组，否则塞入一个没有任何作用的默认角色，防止路由守卫逻辑进入无限循环
+          roles.value = res.data.role ? res.data.role.split(",") : asyncRouteSettings.defaultRoles
+          console.log("roles111",roles)
           resolve(res)
         })
         .catch((error) => {
@@ -67,12 +77,14 @@ export const useUserStore = defineStore("user", () => {
   const logout = () => {
     resetUserInfo()
     token.value = ""
+    roles.value = []
     permissionStore.resetDynamicRouter()
     _resetTagsView()
   }
   /** 重置 Token */
   const resetToken = () => {
     token.value = ""
+    roles.value = []
   }
 
   const resetUserInfo = () => {
@@ -101,7 +113,7 @@ export const useUserStore = defineStore("user", () => {
     }
   )
 
-  return { token, username, userInfo, login, getInfo, logout, resetToken }
+  return {token, roles, username, userInfo, setRoles, login, getInfo, logout, resetToken}
 })
 
 /** 在 setup 外使用 */

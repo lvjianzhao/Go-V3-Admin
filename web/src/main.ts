@@ -14,6 +14,7 @@ import "element-plus/theme-chalk/dark/css-vars.css"
 import "vxe-table/lib/style.css"
 import "vxe-table-plugin-element/dist/style.css"
 import "@/styles/index.scss"
+import {loadDirectives} from "@/directives";
 
 const app = createApp(App)
 
@@ -21,6 +22,8 @@ const app = createApp(App)
 loadPlugins(app)
 /** 加载全局 SVG */
 loadSvg(app)
+/** 加载自定义指令 */
+loadDirectives(app)
 
 app.use(store).use(router)
 router.isReady().then(() => {

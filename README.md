@@ -123,6 +123,6 @@ Copyright (c) 2022-present [pddzl](https://github.com/pddzl)
 
 
 ## todo
-1、前端增加vxe表格页面
+1、修改接口请求方式符合restful规范
 2、增加权限控制指令
 3、验证日志切割是否正常
