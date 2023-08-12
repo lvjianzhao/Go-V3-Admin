@@ -16,18 +16,21 @@ export interface LayoutSettings {
   showThemeSwitch: boolean
   /** 是否显示全屏按钮 */
   showScreenfull: boolean
+  /** 是否显示搜索按钮 */
+  showSearchMenu: boolean
   /** 是否缓存标签栏 */
   cacheTagsView: boolean
 }
 
 export const layoutSettings: LayoutSettings = getConfigLayout() ?? {
   layoutMode: "left",
-  showSettings: false,
-  showTagsView: false,
+  showSettings: true,
+  showTagsView: true,
   fixedHeader: true,
   showLogo: true,
-  showThemeSwitch: false,
-  showScreenfull: false,
+  showThemeSwitch: true,
+  showScreenfull: true,
+  showSearchMenu: true,
   cacheTagsView: false
 }
 
