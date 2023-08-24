@@ -31,7 +31,7 @@ const defaultSettings: LayoutSettings = {
   showLogo: true,
   showThemeSwitch: true,
   showScreenfull: true,
-  showSearchMenu: true,
+  showSearchMenu: false,
   cacheTagsView: false
 }
 
