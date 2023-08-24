@@ -66,6 +66,7 @@ export const useUserStore = defineStore("user", () => {
         })
     })
   }
+
   /** 登出 */
   const logout = () => {
     resetUserInfo()
@@ -74,6 +75,7 @@ export const useUserStore = defineStore("user", () => {
     permissionStore.resetDynamicRouter()
     _resetTagsView()
   }
+
   /** 重置 Token */
   const resetToken = () => {
     token.value = ""
