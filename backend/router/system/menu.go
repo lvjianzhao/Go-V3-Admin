@@ -12,11 +12,11 @@ func (u *MenuRouter) InitMenuRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 	menuRouter := Router.Group("menu").Use(middleware.OperationRecord())
 	menuApi := api.ApiGroupApp.SystemApiGroup.MenuApi
 	{
-		menuRouter.GET("getMenus", menuApi.GetMenus)
-		menuRouter.POST("addMenu", menuApi.AddMenu)
-		menuRouter.POST("editMenu", menuApi.EditMenu)
-		menuRouter.POST("deleteMenu", menuApi.DeleteMenu)
-		menuRouter.POST("getElTreeMenus", menuApi.GetElTreeMenus)
+		menuRouter.GET("", menuApi.GetMenus)
+		menuRouter.POST("", menuApi.AddMenu)
+		menuRouter.PUT("", menuApi.EditMenu)
+		menuRouter.DELETE("/:menuID", menuApi.DeleteMenu)
+		menuRouter.GET("getElTreeMenus", menuApi.GetElTreeMenus)
 	}
 	return menuRouter
 }

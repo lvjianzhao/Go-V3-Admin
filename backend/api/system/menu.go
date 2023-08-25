@@ -71,7 +71,7 @@ func (ma *MenuApi) EditMenu(c *gin.Context) {
 
 func (ma *MenuApi) DeleteMenu(c *gin.Context) {
 	var cId request.CId
-	_ = c.ShouldBindJSON(&cId)
+	cId.ID, _ = utils.StringToUint(c.Param("menuID"))
 
 	// 参数校验
 	validate := validator.New()
@@ -91,7 +91,7 @@ func (ma *MenuApi) DeleteMenu(c *gin.Context) {
 
 func (ma *MenuApi) GetElTreeMenus(c *gin.Context) {
 	var cId request.CId
-	_ = c.ShouldBindJSON(&cId)
+	cId.ID, _ = utils.StringToUint(c.Query("id"))
 
 	// 参数校验
 	validate := validator.New()

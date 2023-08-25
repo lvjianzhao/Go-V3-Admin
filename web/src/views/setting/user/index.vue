@@ -372,7 +372,7 @@ const deleteUserAction = (row: UsersResponse) => {
   })
     .then(() => {
       const index = tableData.value.indexOf(row)
-      deleteUserApi({id: row.ID}).then((res) => {
+      deleteUserApi(row.ID).then((res) => {
         if (res.code === 0) {
           ElMessage({type: "success", message: res.msg})
           tableData.value.splice(index, 1)

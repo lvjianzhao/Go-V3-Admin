@@ -53,7 +53,7 @@ func (ua *UserApi) GetUsers(c *gin.Context) {
 // DeleteUser 删除用户
 func (ua *UserApi) DeleteUser(c *gin.Context) {
 	var cId request.CId
-	_ = c.ShouldBindJSON(&cId)
+	cId.ID, _ = utils.StringToUint(c.Param("userID"))
 
 	// 参数校验
 	validate := validator.New()
@@ -85,8 +85,9 @@ func (ua *UserApi) AddUser(c *gin.Context) {
 	}
 
 	if err := userService.AddUser(addUser); err != nil {
-		response.FailWithMessage("添加失败", c)
-		global.LOG.Error("添加失败", zap.Error(err))
+		msg := fmt.Sprintf("添加失败，error：%s", err)
+		response.FailWithMessage(msg, c)
+		global.LOG.Error(msg)
 	} else {
 		response.OkWithMessage("添加成功", c)
 	}

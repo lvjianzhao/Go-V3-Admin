@@ -5,7 +5,7 @@ import { request } from "@/utils/service"
 /** 获取用户详情 */
 export function getUserInfoApi() {
   return request<ApiResponseData<UsersResponse>>({
-    url: "/user/getUserInfo",
+    url: "/user/detail",
     method: "get"
   })
 }
@@ -42,18 +42,17 @@ type UsersResponseData = ApiResponseData<UsersResponsePageInfo>
 /** 获取所有用户 */
 export function getUsersApi(params: UsersRequestData) {
   return request<UsersResponseData>({
-    url: "/user/getUsers",
+    url: "/user",
     method: "get",
     params
   })
 }
 
 // 删除用户
-export function deleteUserApi(data: reqId) {
+export function deleteUserApi(id: number) {
   return request<ApiResponseData<null>>({
-    url: "/user/deleteUser",
-    method: "post",
-    data
+    url: `/user/${id}`,
+    method: "delete"
   })
 }
 
@@ -69,7 +68,7 @@ export interface reqUser {
 // 添加用户
 export function addUserApi(data: reqUser) {
   return request<ApiResponseData<null>>({
-    url: "/user/addUser",
+    url: "/user",
     method: "post",
     data
   })
@@ -87,8 +86,8 @@ interface reqEditUser {
 // 编辑用户
 export function editUserApi(data: reqEditUser) {
   return request<ApiResponseData<UsersResponse>>({
-    url: "/user/editUser",
-    method: "post",
+    url: "/user",
+    method: "put",
     data
   })
 }
@@ -102,8 +101,8 @@ interface reqModifyPass {
 
 export function modifyPassApi(data: reqModifyPass) {
   return request<ApiResponseData<null>>({
-    url: "/user/modifyPass",
-    method: "post",
+    url: "/user/password",
+    method: "put",
     data
   })
 }
@@ -116,8 +115,8 @@ interface reqSwitchActive {
 
 export function SwitchActiveApi(data: reqSwitchActive) {
   return request<ApiResponseData<null>>({
-    url: "/user/switchActive",
-    method: "post",
+    url: "/user/status",
+    method: "put",
     data
   })
 }

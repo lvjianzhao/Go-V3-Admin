@@ -30,7 +30,7 @@ interface reqApis extends PageInfo {
 // 获取所有api 分页
 export function getApisApi(params: reqApis) {
   return request<ApiResponseData<ApiDataPageInfo>>({
-    url: "/api/getApis",
+    url: "/api",
     method: "get",
     params
   })
@@ -63,29 +63,28 @@ interface ApiTreeAll {
 }
 
 // 获取所有api 不分页
-export function getElTreeApisApi(data: reqId) {
+export function getElTreeApisApi(params: reqId) {
   return request<ApiResponseData<ApiTreeAll>>({
     url: "/api/getElTreeApis",
-    method: "post",
-    data
+    method: "get",
+    params
   })
 }
 
 // 添加api
 export function addApiApi(data: ApiDataBase) {
   return request<ApiResponseData<ApiData>>({
-    url: "/api/addApi",
+    url: "/api",
     method: "post",
     data
   })
 }
 
 // 删除api
-export function deleteApiApi(data: reqId) {
+export function deleteApiApi(id: number) {
   return request<ApiResponseData<null>>({
-    url: "/api/deleteApi",
-    method: "post",
-    data
+    url: `/api/${id}`,
+    method: "delete"
   })
 }
 
@@ -96,8 +95,8 @@ interface reqEdit extends ApiDataBase {
 // 编辑api
 export function editApiApi(data: reqEdit) {
   return request<ApiResponseData<null>>({
-    url: "/api/editApi",
-    method: "post",
+    url: "/api",
+    method: "put",
     data
   })
 }

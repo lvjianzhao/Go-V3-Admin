@@ -308,7 +308,7 @@ const handleDeleteApi = (row: ApiData) => {
     type: "warning"
   })
     .then(() => {
-      deleteApiApi({id: row.ID}).then((res) => {
+      deleteApiApi(row.ID).then((res) => {
         if (res.code === 0) {
           ElMessage({type: "success", message: res.msg})
           const index = tableData.value.indexOf(row)

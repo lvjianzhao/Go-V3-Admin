@@ -12,13 +12,13 @@ func (u *UserRouter) InitUserRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 	userRouter := Router.Group("user").Use(middleware.OperationRecord())
 	userApi := api.ApiGroupApp.SystemApiGroup.UserApi
 	{
-		userRouter.GET("getUserInfo", userApi.GetUserInfo)
-		userRouter.GET("getUsers", userApi.GetUsers)
-		userRouter.POST("deleteUser", userApi.DeleteUser)
-		userRouter.POST("addUser", userApi.AddUser)
-		userRouter.POST("editUser", userApi.EditUser)
-		userRouter.POST("modifyPass", userApi.ModifyPass)
-		userRouter.POST("switchActive", userApi.SwitchActive)
+		userRouter.GET("detail", userApi.GetUserInfo)
+		userRouter.GET("", userApi.GetUsers)
+		userRouter.DELETE("/:userID", userApi.DeleteUser)
+		userRouter.POST("", userApi.AddUser)
+		userRouter.PUT("", userApi.EditUser)
+		userRouter.PUT("password", userApi.ModifyPass)
+		userRouter.PUT("status", userApi.SwitchActive)
 	}
 	return userRouter
 }

@@ -17,7 +17,7 @@ type LoginResponseData = ApiResponseData<{ token: string }>
 export const captcha = () => {
   return request<LoginCodeResponseData>({
     url: "/base/captcha",
-    method: "post"
+    method: "get"
   })
 }
 

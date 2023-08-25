@@ -218,7 +218,7 @@ const deleteMenuAction = (row: MenusData) => {
     type: "warning"
   })
     .then(() => {
-      deleteMenuApi({ id: row.id }).then((res) => {
+      deleteMenuApi(row.id).then((res) => {
         if (res.code === 0) {
           ElMessage({ type: "success", message: res.msg })
           getTableData()

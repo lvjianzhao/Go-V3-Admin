@@ -188,7 +188,7 @@ func (a *ApiApi) GetApiGroups(c *gin.Context) {
 // DeleteApi 删除指定api
 func (a *ApiApi) DeleteApi(c *gin.Context) {
 	var cId request.CId
-	_ = c.ShouldBindJSON(&cId)
+	cId.ID, _ = utils.StringToUint(c.Param("apiID"))
 
 	// 参数校验
 	validate := validator.New()
@@ -230,7 +230,7 @@ func (a *ApiApi) EditApi(c *gin.Context) {
 // GetElTreeApis 格式化列出所有api
 func (a *ApiApi) GetElTreeApis(c *gin.Context) {
 	var cId request.CId
-	_ = c.ShouldBindJSON(&cId)
+	cId.ID, _ = utils.StringToUint(c.Query("id"))
 
 	// 参数校验
 	validate := validator.New()

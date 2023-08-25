@@ -12,11 +12,11 @@ func (r *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 	roleRouter := Router.Group("role").Use(middleware.OperationRecord())
 	roleApi := api.ApiGroupApp.SystemApiGroup.RoleApi
 	{
-		roleRouter.POST("getRoles", roleApi.GetRoles)
-		roleRouter.POST("addRole", roleApi.AddRole)
-		roleRouter.POST("deleteRole", roleApi.DeleteRole)
-		roleRouter.POST("editRole", roleApi.EditRole)
-		roleRouter.POST("editRoleMenu", roleApi.EditRoleMenu)
+		roleRouter.GET("", roleApi.GetRoles)
+		roleRouter.POST("", roleApi.AddRole)
+		roleRouter.DELETE("/:roleID", roleApi.DeleteRole)
+		roleRouter.PUT("", roleApi.EditRole)
+		roleRouter.PUT("roleMenu", roleApi.EditRoleMenu)
 	}
 	return roleRouter
 }

@@ -8,6 +8,7 @@ import (
 	"server/model/common/request"
 	"server/model/common/response"
 	systemReq "server/model/system/request"
+	"server/utils"
 )
 
 type RoleApi struct{}
@@ -48,7 +49,7 @@ func (ra *RoleApi) AddRole(c *gin.Context) {
 // DeleteRole 删除角色
 func (ra *RoleApi) DeleteRole(c *gin.Context) {
 	var cId request.CId
-	_ = c.ShouldBindJSON(&cId)
+	cId.ID, _ = utils.StringToUint(c.Param("roleID"))
 
 	// 参数校验
 	validate := validator.New()
