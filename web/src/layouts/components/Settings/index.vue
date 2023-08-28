@@ -16,6 +16,7 @@ const {
   fixedHeader,
   showThemeSwitch,
   showScreenfull,
+  showWatermark,
   cacheTagsView,
   showSearchMenu
 } = storeToRefs(settingsStore)
@@ -28,7 +29,8 @@ const switchSettings = {
   显示切换主题按钮: showThemeSwitch,
   显示全屏按钮: showScreenfull,
   显示搜索按钮: showSearchMenu,
-  是否缓存标签栏: cacheTagsView
+  显示水印: showWatermark,
+  是否缓存标签栏: cacheTagsView,
 }
 
 /** 非左侧模式时，Header 都是 fixed 布局 */

@@ -10,15 +10,17 @@ import LeftTopMode from "./LeftTopMode.vue"
 import { Settings, RightPanel } from "./components"
 import { DeviceEnum } from "@/constants/app-key"
 import { getCssVariableValue, setCssVariableValue } from "@/utils"
+import {useWatermark} from "@/hooks/useWatermark";
+import {useUserStore} from "@/store/modules/user";
 
 /** Layout 布局响应式 */
 useResize()
 
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
-
-const { showSettings, layoutMode, showTagsView } = storeToRefs(settingsStore)
-
+const { setWatermark: setGlobalWatermark, clear: clearGlobalWatermark } = useWatermark()
+const { showSettings, layoutMode, showTagsView, showWatermark } = storeToRefs(settingsStore)
+const userStore = useUserStore()
 //#region 隐藏标签栏时删除其高度，是为了让 Logo 组件高度和 Header 区域高度始终一致
 const cssVariableName = "--base-tagsview-height"
 const v3TagsviewHeight = getCssVariableValue(cssVariableName)
@@ -26,6 +28,12 @@ watchEffect(() => {
   showTagsView.value
     ? setCssVariableValue(cssVariableName, v3TagsviewHeight)
     : setCssVariableValue(cssVariableName, "0px")
+})
+
+watchEffect(() => {
+  showWatermark.value
+    ? setGlobalWatermark(userStore.username)
+    : clearGlobalWatermark()
 })
 //#endregion
 </script>
