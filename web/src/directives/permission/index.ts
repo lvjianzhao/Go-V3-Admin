@@ -6,7 +6,6 @@ export const permission: Directive = {
   mounted(el, binding) {
     const {value: permissionRoles} = binding
     const {roles} = useUserStoreHook()
-    console.log("roles: ",roles)
     if (Array.isArray(permissionRoles) && permissionRoles.length > 0) {
       const hasPermission = roles.some((role: any) => permissionRoles.includes(role))
       // hasPermission || (el.style.display = "none") // 隐藏

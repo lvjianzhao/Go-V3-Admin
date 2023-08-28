@@ -1,13 +1,14 @@
-import { type ConfigEnv, type UserConfigExport, loadEnv } from "vite"
-import path, { resolve } from "path"
+import {type ConfigEnv, type UserConfigExport, loadEnv} from "vite"
+import path, {resolve} from "path"
 import vue from "@vitejs/plugin-vue"
-import { createSvgIconsPlugin } from "vite-plugin-svg-icons"
+import vueJsx from "@vitejs/plugin-vue-jsx"
+import {createSvgIconsPlugin} from "vite-plugin-svg-icons"
 import svgLoader from "vite-svg-loader"
 
 /** 配置项文档：https://cn.vitejs.dev/config */
 export default (configEnv: ConfigEnv): UserConfigExport => {
   const viteEnv = loadEnv(configEnv.mode, process.cwd()) as ImportMetaEnv
-  const { VITE_PUBLIC_PATH, VITE_CLI_PORT, VITE_BASE_API, VITE_BASE_PATH, VITE_SERVER_PORT } = viteEnv
+  const {VITE_PUBLIC_PATH, VITE_CLI_PORT, VITE_BASE_API, VITE_BASE_PATH, VITE_SERVER_PORT} = viteEnv
   return {
     /** 打包时根据实际情况修改 base */
     base: VITE_PUBLIC_PATH,
@@ -62,8 +63,8 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
         }
       }
     },
-     /** 混淆器 */
-     esbuild: {
+    /** 混淆器 */
+    esbuild: {
       /** 打包时移除 console.log */
       pure: ["console.log"],
       /** 打包时移除 debugger */
@@ -74,8 +75,9 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
     /** Vite 插件 */
     plugins: [
       vue(),
+      vueJsx(),
       /** 将 SVG 静态图转化为 Vue 组件 */
-      svgLoader({ defaultImport: "url" }),
+      svgLoader({defaultImport: "url"}),
       /** SVG */
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), "src/icons/svg")],
