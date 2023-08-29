@@ -58,27 +58,6 @@ export const useUserStore = defineStore("user", () => {
       // 验证返回的 roles 是否为一个非空数组，否则塞入一个没有任何作用的默认角色，防止路由守卫逻辑进入无限循环
       roles.value = res.data.role ? res.data.role.split(",") : asyncRouteSettings.defaultRoles
     }
-  const getInfo = () => {
-    return new Promise((resolve, reject) => {
-      getUserInfoApi()
-        .then((res) => {
-          username.value = res.data.username
-          userInfo.id = res.data.ID
-          userInfo.createdAt = res.data.createdAt
-          userInfo.username = res.data.username
-          userInfo.phone = res.data.phone
-          userInfo.email = res.data.email
-          userInfo.role = res.data.role
-          userInfo.roleId = res.data.roleId
-          // 验证返回的 roles 是否为一个非空数组，否则塞入一个没有任何作用的默认角色，防止路由守卫逻辑进入无限循环
-          roles.value = res.data.role ? res.data.role.split(",") : asyncRouteSettings.defaultRoles
-          console.log("roles111",roles)
-          resolve(res)
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
   }
 
   /** 登出 */
