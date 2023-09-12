@@ -68,7 +68,7 @@ watchEffect(() => {
     justify-content: space-between;
     align-items: center;
     .setting-name {
-      @include ellipsis;
+      @extend %ellipsis;
     }
   }
   .el-button {
