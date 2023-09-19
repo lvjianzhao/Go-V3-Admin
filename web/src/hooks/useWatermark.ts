@@ -9,6 +9,7 @@ type Observer = {
 
 type DefaultConfig = typeof defaultConfig
 
+/** 默认配置 */
 const defaultConfig = {
   /** 防御（默认开启，能防御水印被删除或隐藏，但可能会有性能损耗） */
   defense: true,
@@ -36,6 +37,7 @@ const bodyEl = ref<HTMLElement>(document.body)
  * 1. 可以选择传入挂载水印的容器元素，默认是 body
  * 2. 做了水印防御，能有效防御别人打开控制台删除或隐藏水印
  */
+
 // @ts-ignore
 export function useWatermark(parentEl: Ref<HTMLElement | null> = bodyEl) {
   /** 备份文本 */

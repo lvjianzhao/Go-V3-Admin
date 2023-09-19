@@ -18,7 +18,7 @@ useResize()
 
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
-const { setWatermark: setGlobalWatermark, clear: clearGlobalWatermark } = useWatermark()
+const { setWatermark, clearWatermark } = useWatermark()
 const { showSettings, layoutMode, showTagsView, showWatermark } = storeToRefs(settingsStore)
 const userStore = useUserStore()
 //#region 隐藏标签栏时删除其高度，是为了让 Logo 组件高度和 Header 区域高度始终一致
@@ -30,10 +30,9 @@ watchEffect(() => {
     : setCssVariableValue(cssVariableName, "0px")
 })
 
+/** 开启或关闭系统水印 */
 watchEffect(() => {
-  showWatermark.value
-    ? setGlobalWatermark(userStore.username)
-    : clearGlobalWatermark()
+  showWatermark.value ? setWatermark(userStore.username) : clearWatermark()
 })
 //#endregion
 </script>
