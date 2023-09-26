@@ -9,7 +9,7 @@ import (
 type RoleRouter struct{}
 
 func (r *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
-	roleRouter := Router.Group("role").Use(middleware.OperationRecord())
+	roleRouter := Router.Group("role").Use(middleware.OperationRecord("角色管理"))
 	roleApi := api.ApiGroupApp.SystemApiGroup.RoleApi
 	{
 		roleRouter.GET("", roleApi.GetRoles)

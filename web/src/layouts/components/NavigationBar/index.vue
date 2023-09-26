@@ -31,6 +31,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="toRoute('Profile')">个人中心</el-dropdown-item>
+            <el-dropdown-item @click="toRoute('Record')">操作记录</el-dropdown-item>
             <el-dropdown-item divided @click="logout">
               <span style="display: block">退出登录</span>
             </el-dropdown-item>

@@ -2,13 +2,10 @@ package middleware
 
 import (
 	"bytes"
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"io"
 	"net/http"
-	"net/url"
-	"strings"
 	"time"
 
 	"server/global"
@@ -34,22 +31,24 @@ func (r responseProxyWriter) Write(b []byte) (int, error) {
 	return r.ResponseWriter.Write(b)
 }
 
-func OperationRecord() gin.HandlerFunc {
+func OperationRecord(menu string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 获取请求参数
 		var reqParam []byte
+		// get 请求不记录
 		if c.Request.Method == http.MethodGet {
-			query := c.Request.URL.RawQuery
-			query, _ = url.QueryUnescape(query)
-			split := strings.Split(query, "&")
-			m := make(map[string]string)
-			for _, v := range split {
-				kv := strings.Split(v, "=")
-				if len(kv) == 2 {
-					m[kv[0]] = kv[1]
-				}
-			}
-			reqParam, _ = json.Marshal(&m)
+			return
+			//query := c.Request.URL.RawQuery
+			//query, _ = url.QueryUnescape(query)
+			//split := strings.Split(query, "&")
+			//m := make(map[string]string)
+			//for _, v := range split {
+			//	kv := strings.Split(v, "=")
+			//	if len(kv) == 2 {
+			//		m[kv[0]] = kv[1]
+			//	}
+			//}
+			//reqParam, _ = json.Marshal(&m)
 		} else {
 			var err error
 			reqParam, err = io.ReadAll(c.Request.Body)
@@ -64,13 +63,11 @@ func OperationRecord() gin.HandlerFunc {
 		claims, _ := utils.GetClaims(c)
 
 		record := systemModel.OperationRecord{
-			Ip:        c.ClientIP(),
-			Method:    c.Request.Method,
-			Path:      c.Request.URL.Path,
-			UserAgent: c.Request.UserAgent(),
-			ReqParam:  string(reqParam),
-			UserID:    claims.ID,
-			UserName:  claims.Username,
+			Menu:     menu,
+			Method:   c.Request.Method,
+			Uri:      c.Request.URL.Path,
+			ReqParam: string(reqParam),
+			UserName: claims.Username,
 		}
 
 		writer := responseProxyWriter{
@@ -86,8 +83,8 @@ func OperationRecord() gin.HandlerFunc {
 		record.RespTime = time.Since(now).Milliseconds()
 		record.RespData = writer.body.String()
 
-		//if err := operationRecordService.CreateOperationRecord(record); err != nil {
-		//	global.LOG.Error("create operation record error:", zap.Error(err))
-		//}
+		if err := operationRecordService.CreateOperationRecord(record); err != nil {
+			global.LOG.Error("create operation record error:", zap.Error(err))
+		}
 	}
 }

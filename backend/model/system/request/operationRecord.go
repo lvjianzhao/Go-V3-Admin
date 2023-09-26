@@ -2,15 +2,13 @@ package request
 
 import "server/model/common/request"
 
-type orStruct struct {
-	Method string // 请求方法
-	Path   string // 请求路径
-	Status int    // http code
-}
-
-// OrSearchParams api分页条件查询及排序结构体
+// OrSearchParams 操作记录搜索条件
 type OrSearchParams struct {
-	orStruct
+	Method    string `json:"method"`
+	Menu      string `json:"menu"`
+	Username  string `json:"username"`
+	Status    string `json:"status"`
+	StartTime int64  `json:"startTime"`
+	EndTime   int64  `json:"endTime"`
 	request.PageInfo
-	Asc bool `json:"asc"` // 排序方式:升序true|降序true(默认)
 }

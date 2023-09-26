@@ -9,7 +9,7 @@ import (
 type UserRouter struct{}
 
 func (u *UserRouter) InitUserRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
-	userRouter := Router.Group("user").Use(middleware.OperationRecord())
+	userRouter := Router.Group("user").Use(middleware.OperationRecord("用户管理"))
 	userApi := api.ApiGroupApp.SystemApiGroup.UserApi
 	{
 		userRouter.GET("detail", userApi.GetUserInfo)

@@ -1,56 +1,40 @@
-import { request } from "@/utils/service"
+import {request} from "@/utils/service"
 
-export interface OrData {
-  ID: number
+export interface GetRecordData {
   CreatedAt: string
   ip: string
   method: string
   path: string
   status: number
-  userAgent: string
   reqParam: string
   respData: string
   respTime: number
   userName: string
 }
 
-export interface OrDataPageInfo {
-  list: OrData[]
+export interface RowMeta extends GetRecordData {
+  /** vxe-table 自动添加上去的属性 */
+  _VXE_ID?: string
+}
+
+export type GetRecordResponseData = ApiResponseData<{
+  list: GetRecordData[]
   total: number
-  page: number
-  pageSize: number
-}
+}>
 
-interface reqOrList extends PageInfo {
-  path?: string
-  method?: string
-  status?: number
-  asc?: boolean
-}
 
-// 分页获取操作记录
-export function getOrListApi(data: reqOrList) {
-  return request<ApiResponseData<OrDataPageInfo>>({
-    url: "/or/getOrList",
-    method: "post",
-    data
+/** 查 */
+export function getRecordApi(params: any) {
+  return request<GetRecordResponseData>({
+    url: "/record",
+    method: "get",
+    params
   })
 }
 
-// 删除操作记录
-export function deleteOrApi(data: reqId) {
-  return request<ApiResponseData<null>>({
-    url: "/or/deleteOr",
-    method: "post",
-    data
-  })
-}
-
-// 批量删除操作记录
-export function deleteOrByIdsApi(data: reqIds) {
-  return request<ApiResponseData<null>>({
-    url: "/or/deleteOrByIds",
-    method: "post",
-    data
+export function getSearchOptionsApi() {
+  return request<GetRecordResponseData>({
+    url: "/record/options",
+    method: "get",
   })
 }

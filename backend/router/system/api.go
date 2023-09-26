@@ -9,7 +9,7 @@ import (
 type ApiRouter struct{}
 
 func (u *ApiRouter) InitApiRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
-	apiRouter := Router.Group("api").Use(middleware.OperationRecord())
+	apiRouter := Router.Group("api").Use(middleware.OperationRecord("API管理"))
 	apiApi := api.ApiGroupApp.SystemApiGroup.ApiApi
 	{
 		apiRouter.POST("", apiApi.AddApi)
