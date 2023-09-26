@@ -28,10 +28,14 @@ func RunServer() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
 	go func() {
 		// 服务连接
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			global.LOG.Error("listen", zap.Error(err))
+			srv.Shutdown(ctx)
+			os.Exit(1)
 		}
 	}()
 
@@ -41,7 +45,6 @@ func RunServer() {
 	<-quit
 	global.LOG.Info("Shutdown Server ...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		global.LOG.Error("Server Shutdown", zap.Error(err))
