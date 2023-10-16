@@ -30,7 +30,7 @@ export interface LayoutSettings {
 const defaultSettings: LayoutSettings = {
   layoutMode: "left",
   showSettings: true,
-  showTagsView: true,
+  showTagsView: false,
   fixedHeader: true,
   showFooter: true,
   showLogo: true,

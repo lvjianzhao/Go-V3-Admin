@@ -1,4 +1,4 @@
-const SYSTEM_NAME = "td27-admin"
+const SYSTEM_NAME = "go-admin-v3"
 
 /** 缓存数据时用到的 Key */
 class CacheKey {
