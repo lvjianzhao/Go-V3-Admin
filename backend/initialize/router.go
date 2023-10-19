@@ -4,13 +4,16 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-
+	"net/http"
+	"server/api"
 	_ "server/docs"
 	"server/global"
 	"server/middleware"
 	"server/middleware/log"
 	"server/router"
 )
+
+var web = api.ApiGroupApp.SystemApiGroup.WebHandler
 
 func Routers() *gin.Engine {
 	if global.CONFIG.System.Env == "production" {
@@ -26,6 +29,8 @@ func Routers() *gin.Engine {
 
 	global.LOG.Info("register swagger handler")
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// 解决刷新404问题
+	Router.NoRoute(web.RedirectIndex)
 
 	// 路由组
 	systemRouter := router.RouterGroupApp.System
@@ -36,9 +41,15 @@ func Routers() *gin.Engine {
 		PublicGroup.GET("/health", func(c *gin.Context) {
 			c.JSON(200, "ok")
 		})
+		// 前端静态文件
+		PublicGroup.StaticFS("/static", http.FS(NewResource()))
+		// 前端
+		PublicGroup.GET("/ui/", web.Index)
 	}
+
+	PublicApiGroup := Router.Group("")
 	{
-		systemRouter.InitBaseRouter(PublicGroup) // 注册基础功能路由 不做鉴权
+		systemRouter.InitBaseRouter(PublicApiGroup) // 注册基础功能路由 不做鉴权
 	}
 
 	// 需要认证的路由

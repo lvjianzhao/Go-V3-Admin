@@ -13,6 +13,7 @@ type ApiGroup struct {
 	CasbinApi
 	JwtApi
 	OperationRecordApi
+	WebHandler
 }
 
 var (
